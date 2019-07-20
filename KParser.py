@@ -36,7 +36,7 @@ def Main_Menu():
 
     if decyzja != 1 and decyzja != 2 and decyzja != 3:
         while True:
-            decyzja = int(input("Nieprawidłowa wartość. Spróbuj jeszcze raz. Prawidłowe wartości to 1 lub 2\n"
+            decyzja = int(input("Nieprawidłowa wartość. Spróbuj jeszcze raz. Prawidłowe wartości to 1, 2 lub 3\n"
                                 "1 - Wyszukiwanie adresy email na podstawie zadanej frazy w Google\n"
                                 "2 - Przefiltrowanie danych w pliku email.txt z niepotrzebnych śmieci\n"
                                 "3 - Ustawienia KParser\n"))

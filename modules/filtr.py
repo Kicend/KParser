@@ -4,6 +4,7 @@ cho_dir = []
 cho_file = []
 
 def menu_dir():
+    liczba = 0
     listdir = os.listdir("emaile")
     for liczba, dir in enumerate(listdir):
         print("{} - {}".format(liczba, dir))
@@ -39,3 +40,4 @@ def filter():
     print("Filtracja zakończona pomyślnie")
     plik.close()
 
+# TODO: Przejrzenie kodu

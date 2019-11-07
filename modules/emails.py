@@ -1,4 +1,5 @@
-import os, time
+import os
+import time
 
 emails = []
 d = []
@@ -63,6 +64,8 @@ def save_2(email_2):
             else:
                 emails.append(email_2[b+1:])
 
+    # TODO: Złączenie funkcji save_2 z funkcją save_1 w nową o nazwie save
+
 def dir_db_save(list):
     os.makedirs("config", exist_ok=True)
     dir_db = open("config/dir_db.txt", "a")
@@ -97,6 +100,8 @@ def cho_dir():
         n = dirname.index("\n")
         cho.append(dirname[0:n-1])
         os.makedirs("emaile/{}".format(dirname[0:n-1]), exist_ok=True)
+
+    # TODO: Usunięcie zmiennej globalnej g
 
 def rejestr_read():
     rejestr = open("config/rejestr.txt", "a+")
@@ -180,3 +185,7 @@ def file():
         del dirlist[0]
         del dirlist_f[0]
     print("Pamięć podręczna została wyczyszczona")
+
+# TODO: Uproszczenie struktury, przede wszystkim zmniejszenie ilości list
+# TODO: Stworzenie klasy, w której skład wejdą funkcję odpowiadające za operacje na plikach
+# TODO: Nowy sposób zapisu plików z podziałem na poszczególne strony i znalezione na nich e-maile + numery telefonów

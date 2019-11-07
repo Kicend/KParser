@@ -26,8 +26,10 @@ print("""
 888   Y88b  888       888  888 888          X88 Y8b.     888     
 888    Y88b 888       "Y888888 888      88888P'  "Y8888  888     
                                                                                                                                                                                                                                                                                                                                                                                                       
-                     \n"""
+                     \n
+        WERSJA 0.1 stworzona przez F.Kicend\n"""
       )
+
 def Main_Menu():
     decyzja = int(input("Co chcesz zrobić?\n1 - Wyszukać adresy email na podstawie zadanej frazy w Google\n"
         "2 - Przefiltrować dane w pliku email.txt z niepotrzebnych śmieci\n"
@@ -47,7 +49,8 @@ def Main_Menu():
 def settings():
     decyzja = int(input("Co chcesz zrobić?\n1 - Usunąć zapisane nazwy folderów\n"
                         "2 - Usunąć cały plik z zapisanymi folderami\n"
-                        "3 - Usunąć folder emaile\n"))
+                        "3 - Usunąć folder emaile\n"
+                        "4 - Powrót do menu głównego\n"))
     if decyzja == 1:
         try:
             dir_db = open("config/dir_db.txt", "r")
@@ -77,7 +80,7 @@ def settings():
             time.sleep(5)
             Main_Menu()
 
-    if decyzja == 2:
+    elif decyzja == 2:
         try:
             os.remove("config/dir_db.txt")
             print("Plik został usunięty")
@@ -88,7 +91,7 @@ def settings():
             time.sleep(5)
             Main_Menu()
 
-    if decyzja == 3:
+    elif decyzja == 3:
         try:
             shutil.rmtree("emaile")
             print("Folder został usunięty")
@@ -98,6 +101,8 @@ def settings():
             print("BŁĄÐ: Folder nie istnieje")
             time.sleep(5)
             Main_Menu()
+    else:
+        Main_Menu()
 
 def parser():
     # Parametry szukajki
@@ -153,3 +158,7 @@ def back_to_menu():
 
 Main_Menu()
 other_modules()
+
+# TODO: Wprowadzenie asynchroniczności i wielowątkowości
+# TODO: Funkcja wyszukiwania numerów telefonu
+# TODO: Możliwość konfiguracji programu + zapis konfiguracji do pliku config.json

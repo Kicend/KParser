@@ -27,23 +27,17 @@ def main_menu():
     888    Y88b 888       "Y888888 888      88888P'  "Y8888  888     
 
                          \n
-            WERSJA 0.1 stworzona przez F.Kicend\n"""
+            WERSJA 0.2 stworzona przez F.Kicend\n"""
           )
 
-    decyzja = int(input("Co chcesz zrobić?\n1 - Wyszukać adresy email na podstawie zadanej frazy w Google\n"
-                        "2 - Przefiltrować dane w pliku email.txt z niepotrzebnych śmieci\n"
-                        "3 - Ustawienia KParser\n"))
-    other_modules(decyzja)
+    while True:
+        decision = int(input("1 - Wyszukiwanie adresy email na podstawie zadanej frazy w Google\n"
+                             "2 - Przefiltrowanie danych w pliku email.txt z niepotrzebnych śmieci\n"
+                             "3 - Ustawienia KParser\n"))
 
-    if decyzja != 1 and decyzja != 2 and decyzja != 3:
-        while True:
-            decyzja = int(input("Nieprawidłowa wartość. Spróbuj jeszcze raz. Prawidłowe wartości to 1, 2 lub 3\n"
-                                "1 - Wyszukiwanie adresy email na podstawie zadanej frazy w Google\n"
-                                "2 - Przefiltrowanie danych w pliku email.txt z niepotrzebnych śmieci\n"
-                                "3 - Ustawienia KParser\n"))
-            if decyzja == 1 or decyzja == 2 or decyzja == 3:
-                other_modules(decyzja)
-                break
+        if decision == 1 or decision == 2 or decision == 3:
+            other_modules(decision)
+            break
 
 def settings():
     decision = int(input("Co chcesz zrobić?\n1 - Usunąć zapisane nazwy folderów\n"
@@ -101,6 +95,9 @@ def settings():
             print("BŁĄÐ: Folder nie istnieje")
             time.sleep(5)
             main_menu()
+
+    elif decision == 4:
+        cr.configuration()
     else:
         main_menu()
 

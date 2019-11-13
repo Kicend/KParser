@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from googlesearch import search
 from modules.emails import save
 from modules.emails import file
-from modules.filtr import email_filter
+from modules.filtr import menu_dir
 from modules import core as cr
 
 urls = []
@@ -136,7 +136,7 @@ def other_modules(decision):
     if decision == 1:
         parser()
     if decision == 2:
-        email_filter()
+        menu_dir()
         back_to_menu()
     if decision == 3:
         settings()

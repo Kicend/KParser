@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 from googlesearch import search
 from modules.emails import save
 from modules.emails import file
-from modules.filtr import filter
+from modules.filtr import email_filter
 from modules import core as cr
 
 urls = []
@@ -27,7 +27,7 @@ def main_menu():
     888    Y88b 888       "Y888888 888      88888P'  "Y8888  888     
 
                          \n
-            WERSJA 0.2 stworzona przez F.Kicend\n"""
+            WERSJA 0.3 stworzona przez F.Kicend\n"""
           )
 
     while True:
@@ -91,7 +91,7 @@ def settings():
             print("Folder został usunięty")
             time.sleep(5)
             main_menu()
-        except:
+        except FileNotFoundError:
             print("BŁĄÐ: Folder nie istnieje")
             time.sleep(5)
             main_menu()
@@ -136,7 +136,7 @@ def other_modules(decision):
     if decision == 1:
         parser()
     if decision == 2:
-        filter()
+        email_filter()
         back_to_menu()
     if decision == 3:
         settings()
@@ -165,4 +165,3 @@ main_menu()
 
 # TODO: Wprowadzenie asynchroniczności i wielowątkowości
 # TODO: Funkcja wyszukiwania numerów telefonu
-# TODO: Możliwość konfiguracji programu + zapis konfiguracji do pliku config.json

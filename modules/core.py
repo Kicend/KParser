@@ -13,6 +13,9 @@ default_config = {
 
 cache = {}
 
+# Komunikaty
+change_parameter_successful = "Parametr pomyślnie zmieniony!"
+
 def cache_update():
     with open("config/config.json", "r") as f:
         dict_tmp = json.load(f)
@@ -70,7 +73,7 @@ def configuration():
                 value_2 = int(input("Jaką wartość chcesz wprowadzić?\n"))
                 if not is_return:
                     change_parameter(setting, value_2)
-                    print("Parametr pomyślnie zmieniony!")
+                    print(change_parameter_successful)
                     break
                 else:
                     return value_2
@@ -120,7 +123,7 @@ def configuration():
                             lang_list = list(search_lang.values())
                             lang = lang_list[choose_lang-1]
                             change_parameter(parameter, lang)
-                            print("Parametr pomyślnie zmieniony!")
+                            print(change_parameter_successful)
                             break
                         else:
                             print("Nieprawidłowa wartość!")
@@ -130,7 +133,7 @@ def configuration():
                             lang_list = list(search_lang.values())
                             lang = lang_list[choose_lang-1]
                             change_parameter(parameter, lang)
-                            print("Parametr pomyślnie zmieniony!")
+                            print(change_parameter_successful)
                             break
                         else:
                             print("Nieprawidłowa wartość!")
@@ -138,7 +141,7 @@ def configuration():
                 try:
                     value = int(input())
                     change_parameter(parameter, value)
-                    print("Parametr pomyślnie zmieniony!")
+                    print(change_parameter_successful)
                 except ValueError:
                     except_value(parameter, "int", False)
             elif decision == 1 or decision == 3 or decision == 6 or decision == 7:
@@ -149,11 +152,11 @@ def configuration():
                                               "2 - Nie\n"))
                             if value == 1:
                                 change_parameter(parameter, True)
-                                print("Parametr pomyślnie zmieniony!")
+                                print(change_parameter_successful)
                                 break
                             elif value == 2:
                                 change_parameter(parameter, False)
-                                print("Parametr pomyślnie zmieniony!")
+                                print(change_parameter_successful)
                                 break
                             else:
                                 print("Nieprawidłowa wartość!")
@@ -161,11 +164,11 @@ def configuration():
                             value = except_value(parameter, "int", True)
                             if value == 1:
                                 change_parameter(parameter, True)
-                                print("Parametr pomyślnie zmieniony!")
+                                print(change_parameter_successful)
                                 break
                             elif value == 2:
                                 change_parameter(parameter, False)
-                                print("Parametr pomyślnie zmieniony!")
+                                print(change_parameter_successful)
                                 break
                             else:
                                 print("Nieprawidłowa wartość!")
@@ -177,11 +180,11 @@ def configuration():
                                               "2 - Rozszerzone (emaile + nr telefonów)\n"))
                             if value == 1:
                                 change_parameter(parameter, "basic")
-                                print("Parametr pomyślnie zmieniony!")
+                                print(change_parameter_successful)
                                 break
                             elif value == 2:
                                 change_parameter(parameter, "ext")
-                                print("Parametr pomyślnie zmieniony!")
+                                print(change_parameter_successful)
                                 break
                             else:
                                 print("Nieprawidłowa wartość!")
@@ -189,11 +192,11 @@ def configuration():
                             value = except_value(parameter, "int", True)
                             if value == 1:
                                 change_parameter(parameter, "basic")
-                                print("Parametr pomyślnie zmieniony!")
+                                print(change_parameter_successful)
                                 break
                             elif value == 2:
                                 change_parameter(parameter, "ext")
-                                print("Parametr pomyślnie zmieniony!")
+                                print(change_parameter_successful)
                                 break
                             else:
                                 print("Nieprawidłowa wartość!")
@@ -202,7 +205,7 @@ def configuration():
                         value = input("Jako jaki system ma się przedstawiać ten program podczas wyszukiwania?\n")
                         if len(value) <= 15:
                             change_parameter(parameter, value)
-                            print("Parametr pomyślnie zmieniony!")
+                            print(change_parameter_successful)
                             break
                         else:
                             print("Nazwa za długa! Maksymalna długość to 15 znaków!")
@@ -232,6 +235,6 @@ def configuration():
                                         except IndexError:
                                             print("Liczba poza zakresem!")
                                 change_parameter(parameter, tlds_list_tmp)
-                                print("Parametr pomyślnie zmieniony!")
+                                print(change_parameter_successful)
             configuration()
             break

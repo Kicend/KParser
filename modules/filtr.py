@@ -1,17 +1,14 @@
 import os
 
-cho_dir = []
-cho_file = []
-
 def menu_dir():
     number = 0
     listdir = os.listdir("emaile")
     for number, dir in enumerate(listdir):
         print("{} - {}".format(number, dir))
     choose = int(input("Wybierz folder\n"))
-    cho_dir.append(listdir[choose])
+    dir = listdir[choose]
 
-    listdir = os.listdir("emaile/{}".format(cho_dir[0]))
+    listdir = os.listdir("emaile/{}".format(dir))
     for number, file in enumerate(listdir):
         print("{} - {}".format(number, file))
     print("{} - Powrót do wyboru folderów".format(number+1))
@@ -19,12 +16,12 @@ def menu_dir():
     if choose == number+1:
         menu_dir()
     else:
-        cho_file.append(listdir[choose])
+        file = listdir[choose]
+        email_filter(dir, file)
 
-def email_filter():
-    menu_dir()
-    file = open("emaile/{}/{}".format(cho_dir[0], cho_file[0]), "r+").readlines()
-    file_filter = open("emaile/{}/email_filtr {}".format(cho_dir.pop(0), cho_file.pop(0)), "w+")
+def email_filter(dir, file):
+    file = open("emaile/{}/{}".format(dir, file), "r+").readlines()
+    file_filter = open("emaile/{}/email_filtr {}".format(dir, file), "w+")
     tmp_db = []
 
     for phrase in file:

@@ -17,13 +17,13 @@ cache = {}
 change_parameter_successful = "Parametr pomyślnie zmieniony!"
 
 def cache_update():
-    with open("config/config.json", "r") as f:
+    with open("data/config/config.json", "r") as f:
         dict_tmp = json.load(f)
     return dict_tmp
 
 def change_parameter(parameter: str, value):
     try:
-        with open("config/config.json", "w") as f:
+        with open("data/config/config.json", "w") as f:
             cache[parameter] = value
             config_tmp = cache
             if "OS" in config_tmp.keys():
@@ -34,12 +34,12 @@ def change_parameter(parameter: str, value):
 
 def config_fix(state: int):
     if state == 0:
-        with open("config/config.json", "w") as f:
+        with open("data/config/config.json", "w") as f:
             json.dump(default_config, f, indent=4)
 
 def startup():
     try:
-        with open("config/config.json", "r") as f:
+        with open("data/config/config.json", "r") as f:
             config = json.load(f)
             config_keys = config.keys()
             if default_config.keys() == config_keys:
@@ -56,7 +56,7 @@ def startup():
                         break
 
     except FileNotFoundError:
-        with open("config/config.json", "a+") as config:
+        with open("data/config/config.json", "a+") as config:
             json.dump(default_config, config, indent=4)
 
 def configuration():
@@ -89,7 +89,7 @@ def configuration():
                    "słowacki": "sk"
                    }
 
-    with open("config/config.json", "r") as f:
+    with open("data/config/config.json", "r") as f:
         config = json.load(f)
     number = 1
     keys = list(config.keys())
@@ -101,7 +101,7 @@ def configuration():
     while True:
         decision = int(input("8. Powrót do menu głównego\n"
                              "Wybierz ustawienie wpisując odpowiedni numer\n"))
-        if decision in decisions:
+        if decision in decisions and decision <= 7:
             parameter = keys[decision-1]
             if parameter == "check_require":
                 if config[parameter]:
@@ -137,7 +137,7 @@ def configuration():
                             break
                         else:
                             print("Nieprawidłowa wartość!")
-            if decision == 2 or decision == 5:
+            elif decision == 2 or decision == 5:
                 try:
                     value = int(input())
                     change_parameter(parameter, value)
@@ -215,7 +215,7 @@ def configuration():
                                       "1 - Dodanie nowej domeny\n"
                                       "2 - Usunięcie domeny\n")
                         if value == "1" or value == "2":
-                            with open("config/config.json", "r") as f:
+                            with open("data/config/config.json", "r") as f:
                                 config_tmp = json.load(f)
                                 tlds_list_tmp = list(config_tmp["tlds"])
                                 if value == "1":
@@ -236,5 +236,9 @@ def configuration():
                                             print("Liczba poza zakresem!")
                                 change_parameter(parameter, tlds_list_tmp)
                                 print(change_parameter_successful)
-            configuration()
+        else:
+            cache["main_menu_switch"] = 1
             break
+    if cache["main_menu_switch"] == 0:
+        configuration()
+    del cache["main_menu_switch"]

@@ -1,5 +1,6 @@
 import os
 import time
+from data.modules import core as cr
 
 emails = []
 dirlist = []
@@ -35,12 +36,12 @@ def save(email):
 
 def dir_db_save():
     os.makedirs("config", exist_ok=True)
-    dir_db = open("config/dir_db.txt", "a")
+    dir_db = open("data/config/dir_db.txt", "a")
     dir_db.write("{} \n".format(tmp["new_dir"]))
     dir_db.close()
 
 def dir_db_read():
-    dir_db = open("config/dir_db.txt", "r")
+    dir_db = open("data/config/dir_db.txt", "r")
     for dir in dir_db:
         dirlist.append(dir)
     dir_db.close()
@@ -72,7 +73,7 @@ def cho_dir():
         new_directory()
 
 def registry_read():
-    registry = open("config/rejestr.txt", "r")
+    registry = open("data/config/rejestr.txt", "r")
     for email in registry:
         n = email.index("\n")
         email_n = email[0:n-1]
@@ -80,7 +81,7 @@ def registry_read():
     registry.close()
 
 def registry_save(list):
-    registry = open("config/rejestr.txt", "r+")
+    registry = open("data/config/rejestr.txt", "r+")
     for email in list:
         if email in registry_db:
             print("INFORMACJA: Adres jest już w rejestrze")
@@ -127,7 +128,7 @@ def file():
             if email.count("&"):
                 print(odmowa)
             else:
-                if email in registry_db:
+                if email in registry_db and cr.cache["check_registry"] is True:
                     print("INFORMACJA: Adres jest już w rejestrze")
                 else:
                     f.write("{} \n".format(email))

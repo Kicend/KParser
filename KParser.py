@@ -6,10 +6,10 @@ import time
 import urllib3
 from bs4 import BeautifulSoup
 from googlesearch import search
-from modules.emails import save
-from modules.emails import file
-from modules.filtr import menu_dir
-from modules import core as cr
+from data.modules.search.emails import save
+from data.modules.search.emails import file
+from data.modules.filtr import menu_dir
+from data.modules import core as cr
 
 urls = []
 dirlist = []
@@ -27,7 +27,7 @@ def main_menu():
     888    Y88b 888       "Y888888 888      88888P'  "Y8888  888     
 
                          \n
-            WERSJA 0.3 stworzona przez F.Kicend\n"""
+            WERSJA 0.4 stworzona przez F.Kicend\n"""
           )
 
     while True:
@@ -47,7 +47,7 @@ def settings():
                          "5 - Powrót do menu głównego\n"))
     if decision == 1:
         try:
-            dir_db = open("config/dir_db.txt", "r")
+            dir_db = open("data/config/dir_db.txt", "r")
             for dir in dir_db:
                 if dir.count("\n"):
                     n = dir.index("\n")
@@ -59,7 +59,7 @@ def settings():
                 dirname = int(input("Który zapis chcesz usunąć?\n"))
                 del dirlist[dirname-1]
                 while dirlist:
-                    dir_db = open("config/dir_db.txt", "w+")
+                    dir_db = open("data/config/dir_db.txt", "w+")
                     dir_db.write("{} \n".format(dirlist.pop(0)))
 
                 decision = int(input("Czy chcesz jeszcze coś usunąć?\n"
@@ -76,7 +76,7 @@ def settings():
 
     elif decision == 2:
         try:
-            os.remove("config/dir_db.txt")
+            os.remove("data/config/dir_db.txt")
             print("Plik został usunięty")
             time.sleep(5)
             main_menu()
@@ -98,6 +98,8 @@ def settings():
 
     elif decision == 4:
         cr.configuration()
+        cr.cache_update()
+        main_menu()
     else:
         main_menu()
 
@@ -106,7 +108,11 @@ def parser():
     query = input("Wpisz zapytanie do wyszukiwarki\n")
     queries_number = int(input("Wpisz ilość zapytań\n"))
 
-    for result in search(query, tld="pl" and "com.pl", lang="pl", num=15, stop=queries_number, pause=5):
+    for result in search(query,
+                         tld="pl",
+                         lang=cr.cache["search_lang"],
+                         stop=queries_number,
+                         pause=5):
 
         urls.append(str(result))
         print("Dodano adres\n{}".format(result))

@@ -3,7 +3,6 @@ import json
 default_config = {
     "check_registry": True,
     "queries_number": 10,
-    "tlds": ["pl", "com.pl"],
     "search_lang": "pl",
     "pause": 5,
     "user_agent": "macOS",
@@ -80,7 +79,7 @@ def configuration():
             except ValueError:
                 print("Nieprawidłowa wartość!")
 
-    decisions = (1, 2, 3, 4, 5, 6, 7, 8)
+    decisions = (1, 2, 3, 4, 5, 6, 7)
     search_lang = {"polski": "pl",
                    "angielski": "en",
                    "niemiecki": "de",
@@ -96,12 +95,12 @@ def configuration():
     for parameter, value in config.items():
         print("{}. {} = {}".format(number, parameter, value))
         number += 1
-        if number == 8:
+        if number == 7:
             break
     while True:
-        decision = int(input("8. Powrót do menu głównego\n"
+        decision = int(input("7. Powrót do menu głównego\n"
                              "Wybierz ustawienie wpisując odpowiedni numer\n"))
-        if decision in decisions and decision <= 7:
+        if decision in decisions and decision <= 6:
             parameter = keys[decision-1]
             if parameter == "check_require":
                 if config[parameter]:
@@ -113,7 +112,7 @@ def configuration():
             else:
                 print("Obecna wartość to: {} = {}\n"
                       "Jaką wartość chcesz wprowadzić?".format(parameter, config[parameter]))
-            if decision == 4:
+            if decision == 3:
                 while True:
                     for number, lang in enumerate(search_lang.keys()):
                         print("{} - {}".format(number+1, lang))
@@ -137,14 +136,14 @@ def configuration():
                             break
                         else:
                             print("Nieprawidłowa wartość!")
-            elif decision == 2 or decision == 5:
+            elif decision == 2 or decision == 4:
                 try:
                     value = int(input())
                     change_parameter(parameter, value)
                     print(change_parameter_successful)
                 except ValueError:
                     except_value(parameter, "int", False)
-            elif decision == 1 or decision == 3 or decision == 6 or decision == 7:
+            elif decision == 1 or decision == 5 or decision == 6:
                 if parameter == "check_registry":
                     while True:
                         try:
@@ -209,33 +208,6 @@ def configuration():
                             break
                         else:
                             print("Nazwa za długa! Maksymalna długość to 15 znaków!")
-                elif parameter == "tlds":
-                    while True:
-                        value = input("Wpisz numer odpowiedni numer\n"
-                                      "1 - Dodanie nowej domeny\n"
-                                      "2 - Usunięcie domeny\n")
-                        if value == "1" or value == "2":
-                            with open("data/config/config.json", "r") as f:
-                                config_tmp = json.load(f)
-                                tlds_list_tmp = list(config_tmp["tlds"])
-                                if value == "1":
-                                    value = input("Wprowadź nazwę\n")
-                                    if value not in tlds_list_tmp:
-                                        tlds_list_tmp.append(value)
-                                    else:
-                                        print("Ta domena już jest wpisana!")
-                                if value == "2":
-                                    for number, tld in enumerate(tlds_list_tmp):
-                                        print("{} - {}".format(number+1, tld))
-                                    while True:
-                                        try:
-                                            value = int(input("Wpisz odpowiedni numer\n"))
-                                            del tlds_list_tmp[value-1]
-                                            break
-                                        except IndexError:
-                                            print("Liczba poza zakresem!")
-                                change_parameter(parameter, tlds_list_tmp)
-                                print(change_parameter_successful)
         else:
             cache["main_menu_switch"] = 1
             break

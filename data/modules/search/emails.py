@@ -1,38 +1,113 @@
 import os
 import time
+import requests
+import urllib3
+from bs4 import BeautifulSoup
 from data.modules import core as cr
 
-emails = []
 dirlist = []
-registry_db = []
 tmp = {}
 
-# Komunikaty
-odmowa = "To nie jest adres email. Odmowa zapisu"
+class SearchProcess:
+    def __init__(self, search_id, urls):
+        self.id = search_id
+        self.urls = urls
+        self.emails = []
+        self.registry_db = []
+        self.parser()
 
-def save(email):
-    if email.count(":"):
-        symbol_index = None
-        if email.count(";"):
-            symbol_index = int(email.index(";"))
-        symbol_index_1 = int(email.index(":"))
-        if symbol_index_1 == 0:
-            emails.append(email[1:])
-        else:
-            if symbol_index is not None:
-                emails.append(email[symbol_index_1+1:symbol_index])
-            else:
-                emails.append(email[symbol_index_1+1:])
+    def parser(self):
+        # Wyszukiwanie adresów email na poszczególnych stronach internetowych
+        urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+        while self.urls:
+            url = self.urls.pop(0)
+            r = requests.get(url, headers={"user-agent": cr.cache["user_agent"]}, verify=False)
+            soup = BeautifulSoup(r.text, "lxml")
+            links = soup.find_all("a")
+            links_2 = soup.find_all("b")
+            if links_2:
+                links.extend(links_2)
+            for link in links:
+                email = str(link.get("href"))
+                if email.count("@") == 1:
+                    self.save(email)
+        self.file()
 
-    if email.count("/"):
-        if email.count("www.google.com/maps"):
-            print(odmowa)
-        else:
-            symbol_index = int(email.index("/"))
-            if symbol_index == 0:
-                emails.append(email[1:])
+    def save(self, email):
+        if email.count(":"):
+            symbol_index = None
+            if email.count(";"):
+                symbol_index = int(email.index(";"))
+            symbol_index_1 = int(email.index(":"))
+            if symbol_index_1 == 0:
+                self.emails.append(email[1:])
             else:
-                emails.append(email[symbol_index+1:])
+                if symbol_index is not None:
+                    self.emails.append(email[symbol_index_1+1:symbol_index])
+                else:
+                    self.emails.append(email[symbol_index_1+1:])
+
+        if email.count("/"):
+            if email.count("www.google.com/maps"):
+                pass
+            else:
+                symbol_index = int(email.index("/"))
+                if symbol_index == 0:
+                    self.emails.append(email[1:])
+                else:
+                    self.emails.append(email[symbol_index+1:])
+
+    def file(self):
+        data = time.strftime("%H:%M %d.%m.%Y")
+        if "new_dir" in tmp.keys():
+            dir_db_save()
+        f = open("emaile/{}/email {}.txt".format(tmp["cho"], data), "a")
+        self.registry_read()
+        for email in self.emails:
+            if email.count("@"):
+                if email.count("\\"):
+                    g = int(email.index("\\"))
+                    email_e = email[0:g]
+                    f.write("{} \n".format(email_e))
+                if email.count("www.google.com/maps"):
+                    pass
+                if email.count("www.google.pl/maps"):
+                    pass
+                if email.count("facebook"):
+                    pass
+                if email.count("&"):
+                    pass
+                else:
+                    if email in self.registry_db and cr.cache["check_registry"] is True:
+                        pass
+                    else:
+                        f.write("{} \n".format(email))
+            else:
+                pass
+        f.close()
+        self.registry_save(self.emails)
+
+        while dirlist:
+            del dirlist[0]
+        # TODO: Zgłaszanie końca zadania
+
+    def registry_read(self):
+        registry = open("data/config/rejestr.txt", "r")
+        for email in registry:
+            n = email.index("\n")
+            email_n = email[0:n - 1]
+            self.registry_db.append(email_n)
+        registry.close()
+
+    def registry_save(self, list):
+        registry = open("data/config/rejestr.txt", "r+")
+        for email in list:
+            if email in self.registry_db:
+                pass
+            else:
+                position = list.index(email)
+                registry.write("{} \n".format(list[position]))
+        registry.close()
 
 def dir_db_save():
     os.makedirs("config", exist_ok=True)
@@ -71,76 +146,6 @@ def cho_dir():
     else:
         print("INFORMACJA: Lista folderów jest pusta!")
         new_directory()
-
-def registry_read():
-    registry = open("data/config/rejestr.txt", "r")
-    for email in registry:
-        n = email.index("\n")
-        email_n = email[0:n-1]
-        registry_db.append(email_n)
-    registry.close()
-
-def registry_save(list):
-    registry = open("data/config/rejestr.txt", "r+")
-    for email in list:
-        if email in registry_db:
-            print("INFORMACJA: Adres jest już w rejestrze")
-        else:
-            position = emails.index(email)
-            registry.write("{} \n".format(emails[position]))
-    registry.close()
-
-def file():
-    try:
-        dir_db_read()
-    except FileNotFoundError:
-        print("Plik konfiguracji nie istnieje")
-    os.makedirs("emaile", exist_ok=True)
-    print("Katalog został utworzony")
-    files_list = list(os.listdir("emaile"))
-    if files_list == [] and dirlist == []:
-        new_directory()
-    else:
-        decision = int(input("Co chcesz zrobić? \n 1 - Wybrać nazwę folderu z zapisanych \n 2 - Utworzyć nowy \n"))
-        if decision == 1:
-            cho_dir()
-        else:
-            new_directory()
-
-    data = time.strftime("%H:%M %d.%m.%Y")
-    if "new_dir" in tmp.keys():
-        dir_db_save()
-    f = open("emaile/{}/email {}.txt".format(tmp["cho"], data), "a")
-    print("Plik zapisu w trakcie tworzenia...")
-    registry_read()
-    for email in emails:
-        if email.count("@"):
-            if email.count("\\"):
-                g = int(email.index("\\"))
-                email_e = email[0:g]
-                f.write("{} \n".format(email_e))
-            if email.count("www.google.com/maps"):
-                print(odmowa)
-            if email.count("www.google.pl/maps"):
-                print(odmowa)
-            if email.count("facebook"):
-                print(odmowa)
-            if email.count("&"):
-                print(odmowa)
-            else:
-                if email in registry_db and cr.cache["check_registry"] is True:
-                    print("INFORMACJA: Adres jest już w rejestrze")
-                else:
-                    f.write("{} \n".format(email))
-        else:
-            print(odmowa)
-    f.close()
-    registry_save(emails)
-    print("Plik został pomyślnie utworzony")
-
-    while dirlist:
-        del dirlist[0]
-    print("Pamięć podręczna została wyczyszczona")
 
 # TODO: Stworzenie klasy, w której skład wejdą funkcję odpowiadające za operacje na plikach
 # TODO: Nowy sposób zapisu plików z podziałem na poszczególne strony i znalezione na nich e-maile + numery telefonów

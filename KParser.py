@@ -1,18 +1,18 @@
-import requests
 import sys
 import os
 import shutil
 import time
-import urllib3
-from bs4 import BeautifulSoup
+from multiprocessing import Pool
 from googlesearch import search
-from data.modules.search.emails import save
-from data.modules.search.emails import file
+from data.modules.search.emails import SearchProcess
+from data.modules.search.emails import cho_dir
+from data.modules.search.emails import dir_db_read
+from data.modules.search.emails import new_directory
 from data.modules.filtr import menu_dir
 from data.modules import core as cr
 
-urls = []
 dirlist = []
+search_id = 0
 
 def main_menu():
     print("""
@@ -38,6 +38,54 @@ def main_menu():
         if decision == 1 or decision == 2 or decision == 3:
             other_modules(decision)
             break
+
+def search_parameters(mode):
+    urls = []
+    if mode == 1:
+        # Parametry szukajki
+        queries_number = cr.cache["queries_number"]
+        query = input("Wpisz zapytanie do wyszukiwarki: ")
+        queries_number = int(input("Wpisz ilość zapytań [{}]: ".format(queries_number))
+                             or queries_number)
+
+        try:
+            dir_db_read()
+        except FileNotFoundError:
+            pass
+        os.makedirs("emaile", exist_ok=True)
+        print("Katalog został utworzony")
+        files_list = list(os.listdir("emaile"))
+        if files_list == [] and dirlist == []:
+            new_directory()
+        else:
+            decision = int(input("Co chcesz zrobić?\n 1 - Wybrać nazwę folderu z zapisanych\n 2 - Utworzyć nowy\n"))
+            if decision == 1:
+                cho_dir()
+            else:
+                new_directory()
+
+        for result in search(query,
+                             tld="pl",
+                             lang=cr.cache["search_lang"],
+                             stop=queries_number,
+                             pause=cr.cache["pause"]):
+            urls.append(str(result))
+            print("Dodano adres\n{}".format(result))
+    # TODO: Przeniesienie wyszukiwania urli do klasy SearchProcess
+    else:
+        while True:
+            url = input("Podaj adres url: ")
+            if url.count("http") or url.count("https"):
+                urls.append(url)
+                break
+            else:
+                print("To nie jest adres URL!")
+
+    pool = Pool(1)
+    pool.apply_async(SearchProcess, args=(search_id+1, urls))
+    pool.close()
+    pool.join()
+    main_menu()
 
 def settings():
     decision = int(input("Co chcesz zrobić?\n1 - Usunąć zapisane nazwy folderów\n"
@@ -103,48 +151,22 @@ def settings():
     else:
         main_menu()
 
-def parser():
-    # Parametry szukajki
-    query = input("Wpisz zapytanie do wyszukiwarki\n")
-    queries_number = int(input("Wpisz ilość zapytań\n"))
-
-    for result in search(query,
-                         tld="pl",
-                         lang=cr.cache["search_lang"],
-                         stop=queries_number,
-                         pause=5):
-
-        urls.append(str(result))
-        print("Dodano adres\n{}".format(result))
-
-    # Parametry parsera
-    # url = input("Podaj adres url")
-
-    # Wyszukiwanie adresów email na poszczególnych stronach internetowych
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    while urls:
-        url = urls.pop(0)
-        r = requests.get(url, headers={"user-agent": "macOS"}, verify=False)
-        soup = BeautifulSoup(r.text, "lxml")
-        links = soup.find_all("a")
-        links_2 = soup.find_all("b")
-        if links_2:
-            links.extend(links_2)
-        for link in links:
-            email = str(link.get("href"))
-            if email.count("@") == 1:
-                save(email)
-
-    file()
-    back_to_menu()
-
 def other_modules(decision):
     if decision == 1:
-        parser()
-    if decision == 2:
+        while True:
+            try:
+                mode = int(input("Gdzie chcesz wyszukiwać?\n"
+                                 "1 - Ze stron na podstawie frazy w wyszukiwarce Google\n"
+                                 "2 - Z konkretnej strony na podstawie adresu URL\n"))
+                if mode == 1 or mode == 2:
+                    break
+            except ValueError:
+                print("Nieprawidłowa wartość!")
+        search_parameters(mode)
+    elif decision == 2:
         menu_dir()
         back_to_menu()
-    if decision == 3:
+    elif decision == 3:
         settings()
 
 def back_to_menu():

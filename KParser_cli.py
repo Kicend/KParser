@@ -2,7 +2,6 @@ import sys
 import os
 import shutil
 import time
-import asyncio
 from multiprocessing import Process
 from data.modules.search.emails import SearchProcess
 from data.modules.search.emails import cho_dir

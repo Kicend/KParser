@@ -2,8 +2,8 @@ import sys
 import os
 import shutil
 import time
-from multiprocessing import Pool
-from googlesearch import search
+import asyncio
+from multiprocessing import Process
 from data.modules.search.emails import SearchProcess
 from data.modules.search.emails import cho_dir
 from data.modules.search.emails import dir_db_read
@@ -27,7 +27,7 @@ def main_menu():
     888    Y88b 888       "Y888888 888      88888P'  "Y8888  888     
 
                          \n
-            WERSJA 0.4 stworzona przez F.Kicend\n"""
+            WERSJA 0.5 stworzona przez F.Kicend\n"""
           )
 
     while True:
@@ -40,14 +40,7 @@ def main_menu():
             break
 
 def search_parameters(mode):
-    urls = []
-    if mode == 1:
-        # Parametry szukajki
-        queries_number = cr.cache["queries_number"]
-        query = input("Wpisz zapytanie do wyszukiwarki: ")
-        queries_number = int(input("Wpisz ilość zapytań [{}]: ".format(queries_number))
-                             or queries_number)
-
+    def menu_cho_dir():
         try:
             dir_db_read()
         except FileNotFoundError:
@@ -64,27 +57,29 @@ def search_parameters(mode):
             else:
                 new_directory()
 
-        for result in search(query,
-                             tld="pl",
-                             lang=cr.cache["search_lang"],
-                             stop=queries_number,
-                             pause=cr.cache["pause"]):
-            urls.append(str(result))
-            print("Dodano adres\n{}".format(result))
-    # TODO: Przeniesienie wyszukiwania urli do klasy SearchProcess
+    if mode == 1:
+        # Parametry szukajki
+        queries_number = cr.cache["queries_number"]
+        query = input("Wpisz zapytanie do wyszukiwarki: ")
+        queries_number = int(input("Wpisz ilość zapytań [{}]: ".format(queries_number))
+                             or queries_number)
+        menu_cho_dir()
+        process = Process(name="search_process", target=SearchProcess,
+                          args=(search_id+1, query, queries_number))
+        process.start()
+
     else:
         while True:
             url = input("Podaj adres url: ")
             if url.count("http") or url.count("https"):
-                urls.append(url)
+                menu_cho_dir()
+                process = Process(name="search_process", target=SearchProcess,
+                                  args=(search_id+1, url))
+                process.start()
                 break
             else:
                 print("To nie jest adres URL!")
 
-    pool = Pool(1)
-    pool.apply_async(SearchProcess, args=(search_id+1, urls))
-    pool.close()
-    pool.join()
     main_menu()
 
 def settings():
@@ -193,3 +188,4 @@ main_menu()
 
 # TODO: Wprowadzenie asynchroniczności i wielowątkowości
 # TODO: Funkcja wyszukiwania numerów telefonu
+# TODO: GUI

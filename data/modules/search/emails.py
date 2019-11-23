@@ -2,18 +2,33 @@ import os
 import time
 import requests
 import urllib3
+from googlesearch import search
 from bs4 import BeautifulSoup
 from data.modules import core as cr
 
 dirlist = []
-tmp = {}
 
 class SearchProcess:
-    def __init__(self, search_id, urls):
+    def __init__(self, search_id, query=None, queries_number=None, url=None):
         self.id = search_id
-        self.urls = urls
+        self.query = query
+        self.queries_number = queries_number
+        self.url = url
+        self.urls = []
         self.emails = []
         self.registry_db = []
+        self.search()
+
+    def search(self):
+        if self.url is None:
+            for result in search(self.query,
+                                 tld="pl",
+                                 lang=cr.cache["search_lang"],
+                                 stop=self.queries_number,
+                                 pause=cr.cache["pause"]):
+                self.urls.append(str(result))
+        else:
+            self.urls.append(self.url)
         self.parser()
 
     def parser(self):
@@ -59,16 +74,19 @@ class SearchProcess:
 
     def file(self):
         data = time.strftime("%H:%M %d.%m.%Y")
-        if "new_dir" in tmp.keys():
+        if "new_dir" in cr.cache.keys():
             dir_db_save()
-        f = open("emaile/{}/email {}.txt".format(tmp["cho"], data), "a")
+        f = open("emaile/{}/email {}.txt".format(cr.cache["cho"], data), "a")
         self.registry_read()
         for email in self.emails:
             if email.count("@"):
                 if email.count("\\"):
-                    g = int(email.index("\\"))
-                    email_e = email[0:g]
-                    f.write("{} \n".format(email_e))
+                    index = int(email.index("\\"))
+                    email_e = email[0:index]
+                    if email_e in self.registry_db and cr.cache["check_registry"] is True:
+                        pass
+                    else:
+                        f.write("{} \n".format(email_e))
                 if email.count("www.google.com/maps"):
                     pass
                 if email.count("www.google.pl/maps"):
@@ -112,19 +130,20 @@ class SearchProcess:
 def dir_db_save():
     os.makedirs("config", exist_ok=True)
     dir_db = open("data/config/dir_db.txt", "a")
-    dir_db.write("{} \n".format(tmp["new_dir"]))
+    dir_db.write("{} \n".format(cr.cache["new_dir"]))
     dir_db.close()
 
 def dir_db_read():
     dir_db = open("data/config/dir_db.txt", "r")
     for dir in dir_db:
-        dirlist.append(dir)
+        if dir not in dirlist:
+            dirlist.append(dir)
     dir_db.close()
 
 def new_directory():
     dirname = input("Jak chcesz nazwać nowy folder? \n")
-    tmp["new_dir"] = dirname
-    tmp["cho"] = dirname
+    cr.cache["new_dir"] = dirname
+    cr.cache["cho"] = dirname
     os.makedirs("emaile/{}".format(dirname), exist_ok=True)
 
 def cho_dir():
@@ -141,11 +160,10 @@ def cho_dir():
         else:
             dirname = dirlist[choose]
             n = dirname.index("\n")
-            tmp["cho"] = dirname[0:n-1]
+            cr.cache["cho"] = dirname[0:n-1]
             os.makedirs("emaile/{}".format(dirname[0:n-1]), exist_ok=True)
     else:
         print("INFORMACJA: Lista folderów jest pusta!")
         new_directory()
 
-# TODO: Stworzenie klasy, w której skład wejdą funkcję odpowiadające za operacje na plikach
 # TODO: Nowy sposób zapisu plików z podziałem na poszczególne strony i znalezione na nich e-maile + numery telefonów

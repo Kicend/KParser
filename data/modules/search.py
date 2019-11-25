@@ -43,9 +43,9 @@ class SearchProcess:
             if links_2:
                 links.extend(links_2)
             for link in links:
-                email = str(link.get("href"))
-                if email.count("@") == 1:
-                    self.save(email)
+                result = str(link.get("href"))
+                if result.count("@") == 1:
+                    self.save(result)
         self.file()
 
     def save(self, email):
@@ -73,7 +73,10 @@ class SearchProcess:
                     self.emails.append(email[symbol_index+1:])
 
     def file(self):
-        data = time.strftime("%H:%M %d.%m.%Y")
+        if cr.cache["OS"] == "linux":
+            data = time.strftime("%H:%M %d.%m.%Y")
+        else:
+            data = time.strftime("%HH %MM %d.%m.%Y")
         if "new_dir" in cr.cache.keys():
             dir_db_save()
         f = open("emaile/{}/email {}.txt".format(cr.cache["cho"], data), "a")

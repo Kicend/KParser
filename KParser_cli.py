@@ -3,10 +3,10 @@ import os
 import shutil
 import time
 from multiprocessing import Process
-from data.modules.search.emails import SearchProcess
-from data.modules.search.emails import cho_dir
-from data.modules.search.emails import dir_db_read
-from data.modules.search.emails import new_directory
+from data.modules.search import SearchProcess
+from data.modules.search import cho_dir
+from data.modules.search import dir_db_read
+from data.modules.search import new_directory
 from data.modules.filtr import menu_dir
 from data.modules import core as cr
 

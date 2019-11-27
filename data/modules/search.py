@@ -131,7 +131,7 @@ class SearchProcess:
         registry.close()
 
 def dir_db_save():
-    os.makedirs("config", exist_ok=True)
+    os.makedirs("data/config", exist_ok=True)
     dir_db = open("data/config/dir_db.txt", "a")
     dir_db.write("{} \n".format(cr.cache["new_dir"]))
     dir_db.close()

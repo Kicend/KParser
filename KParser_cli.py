@@ -12,6 +12,7 @@ from data.modules.filtr import menu_dir
 from data.modules import core as cr
 
 dirlist = []
+process_pool = []
 
 def main_menu():
     print("""
@@ -30,6 +31,10 @@ def main_menu():
           )
 
     while True:
+        if process_pool:
+            for process in process_pool:
+                if not process.is_alive():
+                    process.terminate()
         print("POWIADOMIENIA:")
         try:
             with open("data/tmp/curr_session.json", "r") as f:
@@ -77,6 +82,7 @@ def search_parameters(mode):
         cr.cache["search_id"] += 1
         process = Process(name="search_process", target=SearchProcess,
                           args=(cr.cache["search_id"], query, queries_number))
+        process_pool.append(process)
         process.start()
 
     else:

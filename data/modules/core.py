@@ -41,9 +41,7 @@ def startup():
         with open("data/config/config.json", "r") as f:
             config = json.load(f)
             config_keys = config.keys()
-            if default_config.keys() == config_keys:
-                pass
-            else:
+            if default_config.keys() != config_keys:
                 choose = input("BŁĄD: Plik konfiguracji może być uszkodzony!\n"
                                "Czy chcesz, aby została przeprowadzona naprawa? (t/n)\n")
                 while True:

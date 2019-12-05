@@ -3,6 +3,7 @@ import os
 import json
 import shutil
 import time
+from setproctitle import setproctitle
 from multiprocessing import Process
 from data.modules.search import SearchProcess
 from data.modules.search import cho_dir
@@ -189,6 +190,7 @@ def back_to_menu():
     else:
         sys.exit(0)
 
+setproctitle("KParser_cli")
 cr.startup()
 cr.cache = dict(cr.cache_update())
 cr.cache["OS"] = sys.platform

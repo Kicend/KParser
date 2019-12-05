@@ -1,4 +1,5 @@
 import os
+import json
 import time
 import requests
 import urllib3
@@ -110,7 +111,25 @@ class SearchProcess:
 
         while dirlist:
             del dirlist[0]
-        # TODO: Zgłaszanie końca zadania
+
+        # Koniec zadania
+        os.makedirs("data/tmp", exist_ok=True)
+        if not os.path.exists("data/tmp/curr_session.json"):
+            with open("data/tmp/curr_session.json", "a") as f:
+                json.dump({self.query: str(self.id)}, f, indent=4)
+        else:
+            session_dict = {}
+            try:
+                with open("data/tmp/curr_session.json", "r") as f:
+                    session_dict = json.load(f)
+                    session_dict[self.query] = str(self.id)
+            except json.decoder.JSONDecodeError:
+                pass
+            with open("data/tmp/curr_session.json", "w+") as f:
+                if session_dict:
+                    json.dump(session_dict, f, indent=4)
+                else:
+                    json.dump({self.query: str(self.id)}, f, indent=4)
 
     def registry_read(self):
         registry = open("data/config/rejestr.txt", "r")

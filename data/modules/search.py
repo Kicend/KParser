@@ -131,6 +131,8 @@ class SearchProcess:
                 else:
                     json.dump({self.query: str(self.id)}, f, indent=4)
 
+        # TODO: Uproszczenie kodu poprzez dzielenie pamięci z procesem KParser_cli
+
     def registry_read(self):
         registry = open("data/config/rejestr.txt", "r")
         for email in registry:

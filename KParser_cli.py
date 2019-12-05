@@ -1,5 +1,6 @@
 import sys
 import os
+import json
 import shutil
 import time
 from multiprocessing import Process
@@ -11,7 +12,6 @@ from data.modules.filtr import menu_dir
 from data.modules import core as cr
 
 dirlist = []
-search_id = 0
 
 def main_menu():
     print("""
@@ -26,10 +26,21 @@ def main_menu():
     888    Y88b 888       "Y888888 888      88888P'  "Y8888  888     
 
                          \n
-            WERSJA 0.5 stworzona przez F.Kicend\n"""
+            WERSJA 0.5 stworzona przez F. Kicend\n"""
           )
 
     while True:
+        print("POWIADOMIENIA:")
+        try:
+            with open("data/tmp/curr_session.json", "r") as f:
+                search_done_tmp = json.load(f)
+            with open("data/tmp/curr_session.json", "w+"):
+                pass
+            for task, task_id in search_done_tmp.items():
+                print("Zadanie {} o numerze {} zostało ukończone!\n".format(task, task_id))
+        except (json.decoder.JSONDecodeError, FileNotFoundError):
+            print("Brak ukończonych zadań!\n")
+
         decision = int(input("1 - Wyszukiwanie adresy email na podstawie zadanej frazy w Google\n"
                              "2 - Przefiltrowanie danych w pliku email.txt z niepotrzebnych śmieci\n"
                              "3 - Ustawienia KParser\n"))
@@ -63,8 +74,9 @@ def search_parameters(mode):
         queries_number = int(input("Wpisz ilość zapytań [{}]: ".format(queries_number))
                              or queries_number)
         menu_cho_dir()
+        cr.cache["search_id"] += 1
         process = Process(name="search_process", target=SearchProcess,
-                          args=(search_id+1, query, queries_number))
+                          args=(cr.cache["search_id"], query, queries_number))
         process.start()
 
     else:
@@ -72,8 +84,9 @@ def search_parameters(mode):
             url = input("Podaj adres url: ")
             if url.count("http") or url.count("https"):
                 menu_cho_dir()
+                cr.cache["search_id"] += 1
                 process = Process(name="search_process", target=SearchProcess,
-                                  args=(search_id+1, url))
+                                  args=(cr.cache["search_id"], url))
                 process.start()
                 break
             else:
@@ -173,6 +186,7 @@ def back_to_menu():
 cr.startup()
 cr.cache = dict(cr.cache_update())
 cr.cache["OS"] = sys.platform
+cr.cache["search_id"] = 0
 if cr.cache["first_config"]:
     while True:
         choose = input("Czy chcesz wstępnie skonfigurować program KParser? (t/n)\n")
@@ -183,6 +197,7 @@ if cr.cache["first_config"]:
         elif choose == "n":
             cr.change_parameter("first_config", False)
             break
+del cr.cache["first_config"]
 main_menu()
 
 # TODO: Wprowadzenie asynchroniczności i wielowątkowości

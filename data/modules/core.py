@@ -1,4 +1,5 @@
 import json
+import os
 
 default_config = {
     "check_registry": True,
@@ -35,6 +36,8 @@ def config_fix(state: int):
             json.dump(default_config, f, indent=4)
 
 def startup():
+    if os.path.isfile("data/tmp/curr_session.json"):
+        os.remove("data/tmp/curr_session.json")
     try:
         with open("data/config/config.json", "r") as f:
             config = json.load(f)
@@ -205,8 +208,4 @@ def configuration():
                         else:
                             print("Nazwa za długa! Maksymalna długość to 15 znaków!")
         else:
-            cache["main_menu_switch"] = 1
             break
-    if cache["main_menu_switch"] == 0:
-        configuration()
-    del cache["main_menu_switch"]

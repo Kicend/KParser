@@ -25,10 +25,6 @@ def change_parameter(parameter: str, value):
         with open("data/config/config.json", "w") as f:
             cache[parameter] = value
             config_tmp = cache
-            if "OS" in config_tmp.keys():
-                del config_tmp["OS"]
-            if "search_id" in config_tmp.keys():
-                del config_tmp["search_id"]
             json.dump(config_tmp, f, indent=4)
     except FileNotFoundError:
         config_fix(0)

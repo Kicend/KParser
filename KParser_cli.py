@@ -207,8 +207,6 @@ def back_to_menu():
 setproctitle("KParser_cli")
 cr.startup()
 cr.cache = dict(cr.cache_update())
-cr.cache["OS"] = sys.platform
-cr.cache["search_id"] = 0
 if cr.cache["first_config"]:
     while True:
         choose = input("Czy chcesz wstępnie skonfigurować program KParser? (t/n)\n")
@@ -220,6 +218,8 @@ if cr.cache["first_config"]:
             cr.change_parameter("first_config", False)
             break
 del cr.cache["first_config"]
+cr.cache["OS"] = sys.platform
+cr.cache["search_id"] = 0
 main_menu()
 
 # TODO: Funkcja wyszukiwania numerów telefonu

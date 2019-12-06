@@ -16,11 +16,13 @@ cache = {}
 # Komunikaty
 change_parameter_successful = "Parametr pomyślnie zmieniony!"
 
+# Uaktualnienie zawartości pamięci podręcznej pobierając dane z pliku config.json
 def cache_update():
     with open("data/config/config.json", "r") as f:
         dict_tmp = json.load(f)
     return dict_tmp
 
+# Funkcja odpowiedzialna za zmianę i zapis parametru do pliku konfiguracyjnego
 def change_parameter(parameter: str, value):
     try:
         with open("data/config/config.json", "w") as f:
@@ -30,11 +32,13 @@ def change_parameter(parameter: str, value):
     except FileNotFoundError:
         config_fix(0)
 
+# Funckja mająca za zadanie naprawę pliku konfiguracyjnego
 def config_fix(state: int):
     if state == 0:
         with open("data/config/config.json", "w") as f:
             json.dump(default_config, f, indent=4)
 
+# Funkcja sprawdzająca program przed uruchomieniem menu głównego
 def startup():
     if os.path.isfile("data/tmp/curr_session.json"):
         os.remove("data/tmp/curr_session.json")
@@ -57,6 +61,7 @@ def startup():
         with open("data/config/config.json", "a+") as config:
             json.dump(default_config, config, indent=4)
 
+# Szczegółowe ustawienia programu znajdują się w tej funkcji
 def configuration():
     def except_value(setting, value_type: str, is_return: bool):
         if value_type == "int":

@@ -9,6 +9,7 @@ from data.modules import core as cr
 
 dirlist = []
 
+# Klasa, która jest uruchamiana w osobnym procesie z pomocą multiprocessing
 class SearchProcess:
     def __init__(self, search_id, query=None, queries_number=None, url=None):
         self.id = search_id

@@ -15,6 +15,7 @@ from data.modules import core as cr
 dirlist = []
 process_pool = []
 
+# Funkcja będąca menu głównym programu, w którym pokazywane są powiadomienia o zakończonych zadaniach
 def main_menu():
     print("""
 
@@ -56,6 +57,7 @@ def main_menu():
             other_modules(decision)
             break
 
+# Funkcja odpowiedzialna za zebranie danych, a następnie inicjalizacji procesu parsowania
 def search_parameters(mode):
     def menu_cho_dir():
         try:
@@ -104,8 +106,10 @@ def search_parameters(mode):
 
     main_menu()
 
+# Funkcja będąca główną częścią ustawień programu, z której można dostać się do innych szczegółowych opcji
 def settings():
-    decision = int(input("Co chcesz zrobić?\n1 - Usunąć zapisane nazwy folderów\n"
+    decision = int(input("Co chcesz zrobić?\n"
+                         "1 - Usunąć zapisane nazwy folderów\n"
                          "2 - Usunąć cały plik z zapisanymi folderami\n"
                          "3 - Usunąć folder emaile\n"
                          "4 - Skonfigurować program\n"
@@ -168,6 +172,7 @@ def settings():
     else:
         main_menu()
 
+# Funkcja przekierowująca użytkownika do innych części kiedy jesteśmy w funkcji search_parameters
 def other_modules(decision):
     if decision == 1:
         while True:
@@ -204,6 +209,7 @@ def back_to_menu():
     else:
         sys.exit(0)
 
+# Główny wątek programu
 setproctitle("KParser_cli")
 cr.startup()
 cr.cache = dict(cr.cache_update())

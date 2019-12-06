@@ -28,7 +28,7 @@ def main_menu():
     888    Y88b 888       "Y888888 888      88888P'  "Y8888  888     
 
                          \n
-            WERSJA 0.5 stworzona przez F. Kicend\n"""
+            WERSJA 0.6 stworzona przez F. Kicend\n"""
           )
 
     while True:
@@ -49,9 +49,10 @@ def main_menu():
 
         decision = int(input("1 - Wyszukiwanie adresy email na podstawie zadanej frazy w Google\n"
                              "2 - Przefiltrowanie danych w pliku email.txt z niepotrzebnych śmieci\n"
-                             "3 - Ustawienia KParser\n"))
+                             "3 - Ustawienia KParser\n"
+                             "4 - Zakończ program\n"))
 
-        if decision == 1 or decision == 2 or decision == 3:
+        if decision == 1 or decision == 2 or decision == 3 or decision == 4:
             other_modules(decision)
             break
 
@@ -67,7 +68,9 @@ def search_parameters(mode):
         if files_list == [] and dirlist == []:
             new_directory()
         else:
-            decision = int(input("Co chcesz zrobić?\n 1 - Wybrać nazwę folderu z zapisanych\n 2 - Utworzyć nowy\n"))
+            decision = int(input("Co chcesz zrobić?\n"
+                                 "1 - Wybrać nazwę folderu z zapisanych\n"
+                                 "2 - Utworzyć nowy\n"))
             if decision == 1:
                 cho_dir()
             else:
@@ -171,17 +174,28 @@ def other_modules(decision):
             try:
                 mode = int(input("Gdzie chcesz wyszukiwać?\n"
                                  "1 - Ze stron na podstawie frazy w wyszukiwarce Google\n"
-                                 "2 - Z konkretnej strony na podstawie adresu URL\n"))
-                if mode == 1 or mode == 2:
+                                 "2 - Z konkretnej strony na podstawie adresu URL\n"
+                                 "3 - Powrót do menu głównego\n"))
+                if mode == 1 or mode == 2 or mode == 3:
                     break
             except ValueError:
                 print("Nieprawidłowa wartość!")
-        search_parameters(mode)
+        if mode == 3:
+            main_menu()
+        else:
+            search_parameters(mode)
     elif decision == 2:
         menu_dir()
         back_to_menu()
     elif decision == 3:
         settings()
+    elif decision == 4:
+        if process_pool:
+            for process in process_pool:
+                if not process.is_alive():
+                    process.terminate()
+        os.remove("data/tmp/curr_session.json")
+        sys.exit(0)
 
 def back_to_menu():
     decision = int(input("1 - Wróć do menu głównego\n2 - Zakończ program\n"))
@@ -208,6 +222,6 @@ if cr.cache["first_config"]:
 del cr.cache["first_config"]
 main_menu()
 
-# TODO: Wprowadzenie asynchroniczności i wielowątkowości
 # TODO: Funkcja wyszukiwania numerów telefonu
+# TODO: Czyszczenie konsoli po przejściach do innych części programu
 # TODO: GUI

@@ -112,7 +112,8 @@ def settings():
                          "2 - Usunąć cały plik z zapisanymi folderami\n"
                          "3 - Usunąć folder emaile\n"
                          "4 - Skonfigurować program\n"
-                         "5 - Powrót do menu głównego\n"))
+                         "5 - Zresetować do domyślnych ustawień\n"
+                         "6 - Powrót do menu głównego\n"))
     if decision == 1:
         try:
             dir_db = open("data/config/dir_db.txt", "r")
@@ -168,6 +169,10 @@ def settings():
         sett.configuration()
         cr.cache_update()
         main_menu()
+    elif decision == 5:
+        cr.config_fix(0)
+        print("Program zresetowany do ustawień domyślnych!")
+        main_menu()
     else:
         main_menu()
 
@@ -198,7 +203,8 @@ def other_modules(decision):
             for process in process_pool:
                 if not process.is_alive():
                     process.terminate()
-        os.remove("data/tmp/curr_session.json")
+        if os.path.isfile("data/tmp/curr_session.json"):
+            os.remove("data/tmp/curr_session.json")
         sys.exit(0)
 
 def back_to_menu():

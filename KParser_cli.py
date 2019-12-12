@@ -5,12 +5,11 @@ import shutil
 import time
 from setproctitle import setproctitle
 from multiprocessing import Process
+from data.modules.core import core as cr
+from data.modules.core.io_functions import cho_dir, dir_db_read, new_directory
+from data.modules import settings as sett
 from data.modules.search import SearchProcess
-from data.modules.search import cho_dir
-from data.modules.search import dir_db_read
-from data.modules.search import new_directory
 from data.modules.filtr import menu_dir
-from data.modules import core as cr
 
 dirlist = []
 process_pool = []
@@ -166,7 +165,7 @@ def settings():
             main_menu()
 
     elif decision == 4:
-        cr.configuration()
+        sett.configuration()
         cr.cache_update()
         main_menu()
     else:
@@ -217,11 +216,11 @@ if cr.cache["first_config"]:
     while True:
         choose = input("Czy chcesz wstępnie skonfigurować program KParser? (t/n)\n")
         if choose == "t":
-            cr.configuration()
-            cr.change_parameter("first_config", False)
+            sett.configuration()
+            sett.change_parameter("first_config", False)
             break
         elif choose == "n":
-            cr.change_parameter("first_config", False)
+            sett.change_parameter("first_config", False)
             break
 del cr.cache["first_config"]
 cr.cache["OS"] = sys.platform

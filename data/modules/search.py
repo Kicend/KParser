@@ -37,7 +37,7 @@ class SearchProcess:
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         while self.urls:
             url = self.urls.pop(0)
-            r = requests.get(url, headers={"user-agent": cr.cache["user_agent"]}, verify=False)
+            r = requests.get(url, headers={"User-Agent": cr.cache["user_agent"]}, verify=False)
             soup = BeautifulSoup(r.text, "lxml")
             links = soup.find_all("a")
             links_2 = soup.find_all("b")
@@ -152,4 +152,3 @@ class SearchProcess:
         registry.close()
 
 # TODO: Nowy sposób zapisu plików z podziałem na poszczególne strony i znalezione na nich e-maile + numery telefonów
-# TODO: Przerzucenie części rzeczy do core

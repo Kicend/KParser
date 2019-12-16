@@ -6,7 +6,6 @@ default_config = {
     "queries_number": 10,
     "search_lang": "pl",
     "pause": 5,
-    "user_agent": "macOS",
     "search_type": "ext",
     "first_config": True
 }
@@ -16,9 +15,8 @@ keys_id = {
     1: "queries_number",
     2: "search_lang",
     3: "pause",
-    4: "user_agent",
-    5: "search_type",
-    6: "first_config"
+    4: "search_type",
+    5: "first_config"
 }
 
 cache = {}
@@ -45,7 +43,7 @@ def startup():
     if os.path.isfile("data/tmp/curr_session.json"):
         os.remove("data/tmp/curr_session.json")
     try:
-        config_correct_types = (bool, int, str, int, str, str, bool)
+        config_correct_types = (bool, int, str, int, str, bool)
         with open("data/config/config.json", "r") as f:
             config = json.load(f)
             # Sprawdzanie typów wartości w pliku konfiguracyjnym
@@ -70,5 +68,3 @@ def startup():
     except FileNotFoundError:
         with open("data/config/config.json", "a+") as config:
             json.dump(default_config, config, indent=4)
-
-# TODO: Wydzielenie z tego modułu słownika cache do osobnego modułu cache.py

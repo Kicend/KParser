@@ -1,9 +1,9 @@
-import sys
 import os
-import json
-import shutil
-import time
 from setproctitle import setproctitle
+from json import load, decoder
+from sys import exit, platform
+from time import sleep
+from shutil import rmtree
 from multiprocessing import Process
 from data.modules.core import core as cr
 from data.modules.core.io_functions import cho_dir, dir_db_read, new_directory
@@ -39,12 +39,12 @@ def main_menu():
         print("POWIADOMIENIA:")
         try:
             with open("data/tmp/curr_session.json", "r") as f:
-                search_done_tmp = json.load(f)
+                search_done_tmp = load(f)
             with open("data/tmp/curr_session.json", "w+"):
                 pass
             for task, task_id in search_done_tmp.items():
                 print("Zadanie {} o numerze {} zostało ukończone!\n".format(task, task_id))
-        except (json.decoder.JSONDecodeError, FileNotFoundError):
+        except (decoder.JSONDecodeError, FileNotFoundError):
             print("Brak ukończonych zadań!\n")
 
         decision = int(input("1 - Wyszukiwanie adresy email na podstawie zadanej frazy w Google\n"
@@ -140,35 +140,36 @@ def settings():
                     break
         except FileNotFoundError:
             print("BŁĄD: Plik nie istnieje")
-            time.sleep(5)
+            sleep(5)
             main_menu()
 
     elif decision == 2:
         try:
             os.remove("data/config/dir_db.txt")
             print("Plik został usunięty")
-            time.sleep(5)
+            sleep(5)
             main_menu()
         except FileNotFoundError:
             print("BŁĄÐ: Plik nie istnieje")
-            time.sleep(5)
+            sleep(5)
             main_menu()
 
     elif decision == 3:
         try:
-            shutil.rmtree("emaile")
+            rmtree("emaile")
             print("Folder został usunięty")
-            time.sleep(5)
+            sleep(5)
             main_menu()
         except FileNotFoundError:
             print("BŁĄÐ: Folder nie istnieje")
-            time.sleep(5)
+            sleep(5)
             main_menu()
 
     elif decision == 4:
         sett.configuration()
         cr.cache_update()
         main_menu()
+
     elif decision == 5:
         cr.config_fix(0)
         print("Program zresetowany do ustawień domyślnych!")
@@ -205,14 +206,14 @@ def other_modules(decision):
                     process.terminate()
         if os.path.isfile("data/tmp/curr_session.json"):
             os.remove("data/tmp/curr_session.json")
-        sys.exit(0)
+        exit(0)
 
 def back_to_menu():
     decision = int(input("1 - Wróć do menu głównego\n2 - Zakończ program\n"))
     if decision == 1:
         main_menu()
     else:
-        sys.exit(0)
+        exit(0)
 
 # Główny wątek programu
 setproctitle("KParser_cli")
@@ -229,7 +230,7 @@ if cr.cache["first_config"]:
             sett.change_parameter("first_config", False)
             break
 del cr.cache["first_config"]
-cr.cache["OS"] = sys.platform
+cr.cache["OS"] = platform
 cr.cache["search_id"] = 0
 main_menu()
 

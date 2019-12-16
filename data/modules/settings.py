@@ -156,15 +156,6 @@ def configuration():
                                 break
                             else:
                                 print("Nieprawidłowa wartość!")
-                elif parameter == "user_agent":
-                    while True:
-                        value = input("Jako jaki system ma się przedstawiać ten program podczas wyszukiwania?\n")
-                        if len(value) <= 15:
-                            change_parameter(parameter, value)
-                            print(change_parameter_successful)
-                            break
-                        else:
-                            print("Nazwa za długa! Maksymalna długość to 15 znaków!")
         else:
             break
 

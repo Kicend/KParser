@@ -28,7 +28,7 @@ def main_menu():
     888    Y88b 888       "Y888888 888      88888P'  "Y8888  888     
 
                          \n
-            WERSJA 0.6.1 stworzona przez F. Kicend\n"""
+            WERSJA 0.7 stworzona przez F. Kicend\n"""
           )
 
     while True:

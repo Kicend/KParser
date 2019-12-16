@@ -39,8 +39,8 @@ def main_menu():
                     process.terminate()
         print("POWIADOMIENIA:")
         try:
-            with open("data/tmp/curr_session.json", "r") as f:
-                search_done_tmp = load(f)
+            with open("data/tmp/curr_session.json", "r") as cs:
+                search_done_tmp = load(cs)
             with open("data/tmp/curr_session.json", "w+"):
                 pass
             for task, task_id in search_done_tmp.items():

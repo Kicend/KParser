@@ -1,5 +1,5 @@
 import json
-from .core.core import cache, config_fix
+from .core import core as cr
 
 # Komunikaty
 change_parameter_successful = "Parametr pomyślnie zmieniony!"
@@ -8,11 +8,11 @@ change_parameter_successful = "Parametr pomyślnie zmieniony!"
 def change_parameter(parameter: str, value):
     try:
         with open("data/config/config.json", "w") as f:
-            cache[parameter] = value
-            config_tmp = cache
+            cr.cache[parameter] = value
+            config_tmp = cr.cache
             json.dump(config_tmp, f, indent=4)
     except FileNotFoundError:
-        config_fix(0)
+        cr.config_fix(0)
 
 # Szczegółowe ustawienia programu znajdują się w tej funkcji
 def configuration():
@@ -167,3 +167,5 @@ def configuration():
                             print("Nazwa za długa! Maksymalna długość to 15 znaków!")
         else:
             break
+
+# TODO: USER-AGENT brany z pliku z predefiniowanymi UA

@@ -158,5 +158,3 @@ def configuration():
                                 print("Nieprawidłowa wartość!")
         else:
             break
-
-# TODO: USER-AGENT brany z pliku z predefiniowanymi UA

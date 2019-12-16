@@ -4,6 +4,7 @@ from json import load, decoder
 from sys import exit, platform
 from time import sleep
 from shutil import rmtree
+from random import randint
 from multiprocessing import Process
 from data.modules.core import core as cr
 from data.modules.core.io_functions import cho_dir, dir_db_read, new_directory
@@ -232,6 +233,10 @@ if cr.cache["first_config"]:
 del cr.cache["first_config"]
 cr.cache["OS"] = platform
 cr.cache["search_id"] = 0
+rand_number = randint(0, 8)
+with open("data/UA.json", "r") as f:
+    ua = load(f)
+    cr.cache["user_agent"] = ua[str(rand_number)]
 main_menu()
 
 # TODO: Funkcja wyszukiwania numerów telefonu

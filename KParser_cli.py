@@ -29,7 +29,7 @@ def main_menu():
     888    Y88b 888       "Y888888 888      88888P'  "Y8888  888     
 
                          \n
-            WERSJA 0.7.1 stworzona przez F. Kicend\n"""
+            WERSJA 0.7.2 stworzona przez F. Kicend\n"""
           )
 
     while True:
@@ -139,6 +139,7 @@ def settings():
                     dir_db.close()
                     main_menu()
                     break
+
         except FileNotFoundError:
             print("BŁĄD: Plik nie istnieje")
             sleep(5)
@@ -217,27 +218,27 @@ def back_to_menu():
         exit(0)
 
 # Główny wątek programu
-setproctitle("KParser_cli")
-cr.startup()
-cr.cache = dict(cr.cache_update())
-if cr.cache["first_config"]:
-    while True:
-        choose = input("Czy chcesz wstępnie skonfigurować program KParser? (t/n)\n")
-        if choose == "t":
-            sett.configuration()
-            sett.change_parameter("first_config", False)
-            break
-        elif choose == "n":
-            sett.change_parameter("first_config", False)
-            break
-del cr.cache["first_config"]
-cr.cache["OS"] = platform
-cr.cache["search_id"] = 0
-rand_number = randint(0, 8)
-with open("data/UA.json", "r") as f:
-    ua = load(f)
-    cr.cache["user_agent"] = ua[str(rand_number)]
-main_menu()
+if __name__ == "__main__":
+    setproctitle("KParser_cli")
+    cr.startup()
+    cr.cache = dict(cr.cache_update())
+    if cr.cache["first_config"]:
+        while True:
+            choose = input("Czy chcesz wstępnie skonfigurować program KParser? (t/n)\n")
+            if choose == "t":
+                sett.configuration()
+                sett.change_parameter("first_config", False)
+                break
+            elif choose == "n":
+                sett.change_parameter("first_config", False)
+                break
+    del cr.cache["first_config"]
+    cr.cache["OS"] = platform
+    cr.cache["search_id"] = 0
+    with open("data/UA.json", "r") as f:
+        ua = load(f)
+        cr.cache["user_agent"] = ua[str(randint(0, 8))]
+    main_menu()
 
 # TODO: Funkcja wyszukiwania numerów telefonu
 # TODO: Czyszczenie konsoli po przejściach do innych części programu

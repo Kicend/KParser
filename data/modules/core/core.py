@@ -66,5 +66,6 @@ def startup():
                         break
 
     except FileNotFoundError:
+        os.makedirs("data/config", exist_ok=True)
         with open("data/config/config.json", "a+") as config:
             json.dump(default_config, config, indent=4)

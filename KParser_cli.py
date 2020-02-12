@@ -10,7 +10,7 @@ from data.modules.core import core as cr
 from data.modules.core.io_functions import cho_dir, dir_db_read, new_directory
 from data.modules import settings as sett
 from data.modules.search import SearchProcess
-from data.modules.filtr import menu_dir
+from data.modules.filter import menu_dir
 
 dirlist = []
 process_pool = []

@@ -4,10 +4,25 @@ from .core import core as cr
 # Komunikaty
 change_parameter_successful = "Parametr pomyślnie zmieniony!"
 
+# Słowniki
+search_lang = {"polski": "pl",
+               "angielski": "en",
+               "niemiecki": "de",
+               "francuski": "fr",
+               "czeski": "cs",
+               "słowacki": "sk"
+               }
+
 # Funkcja odpowiedzialna za zmianę i zapis parametru do pliku konfiguracyjnego
 def change_parameter(parameter: str, value):
     try:
         with open("data/config/config.json", "w") as f:
+            keys_to_delete = ["OS", "user_agent", "mode", "search_id"]
+            for i in keys_to_delete:
+                try:
+                    del cr.cache[i]
+                except KeyError:
+                    pass
             cr.cache[parameter] = value
             config_tmp = cr.cache
             json.dump(config_tmp, f, indent=4)
@@ -37,13 +52,6 @@ def configuration():
                 print("Nieprawidłowa wartość!")
 
     decisions = (1, 2, 3, 4, 5, 6, 7)
-    search_lang = {"polski": "pl",
-                   "angielski": "en",
-                   "niemiecki": "de",
-                   "francuski": "fr",
-                   "czeski": "cs",
-                   "słowacki": "sk"
-                   }
 
     with open("data/config/config.json", "r") as f:
         config = json.load(f)

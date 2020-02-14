@@ -4,11 +4,12 @@ import data.modules.settings as sett
 import data.modules.search as search
 import PyQt5.QtWidgets as QTw
 import PyQt5.QtGui as QTg
-import PyQt5.QtCore as QTc
 from PyQt5.QtCore import pyqtSlot
 from setproctitle import setproctitle
-from json import load, decoder
+from json import load
 from random import randint
+from multiprocessing import Process
+from os import makedirs
 
 search_lang = ["pl",
                "en",
@@ -33,7 +34,7 @@ class KParser(QTw.QWidget):
 
     def main(self):
         if cr.cache["first_config"]:
-            answer = self.first_config_event()
+            answer = self.message_question("Czy chcesz wstępnie skonfigurować program KParser?")
             if answer == "Yes":
                 sett.change_parameter("first_config", False)
                 cr.cache["mode"] = 1
@@ -85,7 +86,6 @@ class KParser(QTw.QWidget):
         self.resize(280, 120)
         self.setWindowTitle("KParser")
         self.tmp["path"] = "email/"
-        self.tmp["path_len"] = 6
         start_btn = QTw.QPushButton("Rozpocznij wyszukiwanie", self)
         start_btn.setEnabled(False)
         back_btn = QTw.QPushButton("Wróć", self)
@@ -97,12 +97,14 @@ class KParser(QTw.QWidget):
         url_line.setObjectName("text")
         queries_number_line = QTw.QLineEdit(str(cr.cache["queries_number"]), self)
         queries_number_line.setObjectName("query_number")
+        self.tmp["query_number"] = cr.cache["queries_number"]
         path_line = QTw.QLineEdit("email/", self)
         path_line.setObjectName("path")
         search_type_radio_btn_1 = QTw.QRadioButton("Fraza do Google'a", self)
         search_type_radio_btn_1.setObjectName("radio_1")
         search_type_radio_btn_2 = QTw.QRadioButton("Konkretna strona", self)
         search_type_radio_btn_2.setObjectName("radio_2")
+        self.tmp["search_type"] = "phrase"
         search_type_radio_btn_1.setChecked(True)
         layout_VBox.addWidget(url_line, 0)
         layout_HBox_1.addWidget(search_type_radio_btn_1, 0)
@@ -138,7 +140,7 @@ class KParser(QTw.QWidget):
                     except ValueError:
                         self.tmp[par_id] = 0
                         if val != "":
-                            self.invalid_value_type("Nieprawidłowy typ danych: Dozwolone są liczby całkowite")
+                            self.message_warning("Nieprawidłowy typ danych: Dozwolone są liczby całkowite")
                 else:
                     self.tmp[par_id] = sending_button.text()
             values = list(self.tmp.values())
@@ -157,6 +159,15 @@ class KParser(QTw.QWidget):
     @pyqtSlot()
     def search_start(self):
         cr.cache["search_id"] += 1
+        cr.cache["cho"] = self.tmp["path"]
+        makedirs("emaile/{}".format(cr.cache["cho"]), exist_ok=True)
+        if self.tmp["search_type"] == "phrase":
+            process = Process(name="search_process", target=search.SearchProcess,
+                              args=(cr.cache["search_id"], self.tmp["query"], self.tmp["query_number"]))
+        else:
+            process = Process(name="search_process", target=search.SearchProcess,
+                              args=(cr.cache["search_id"], self.tmp["query"]))
+        process.start()
 
     @pyqtSlot()
     def filter(self):
@@ -182,7 +193,7 @@ class KParser(QTw.QWidget):
                     self.tmp[par_id] = val
                 except ValueError:
                     if val != "":
-                        self.invalid_value_type("Nieprawidłowy typ danych: Dozwolone są liczby całkowite")
+                        self.message_warning("Nieprawidłowy typ danych: Dozwolone są liczby całkowite")
             else:
                 self.tmp[par_id] = sending_button.currentIndex()
             confirm_btn.setEnabled(True)
@@ -257,10 +268,9 @@ class KParser(QTw.QWidget):
             except TypeError:
                 pass
 
-    def first_config_event(self):
+    def message_question(self, text):
         answer = QTw.QMessageBox.question(
-            self, "Komunikat",
-            "Czy chcesz wstępnie skonfigurować program KParser?",
+            self, "Komunikat", text,
             QTw.QMessageBox.Yes | QTw.QMessageBox.No)
 
         if answer == QTw.QMessageBox.Yes:
@@ -268,7 +278,7 @@ class KParser(QTw.QWidget):
         else:
             return "No"
 
-    def invalid_value_type(self, text: str):
+    def message_warning(self, text: str):
         QTw.QMessageBox.warning(
             self, "Błąd", text
         )

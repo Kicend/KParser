@@ -1,6 +1,7 @@
 import sys
 import data.modules.core.core as cr
 import data.modules.settings as sett
+import data.modules.search as search
 import PyQt5.QtWidgets as QTw
 import PyQt5.QtGui as QTg
 import PyQt5.QtCore as QTc
@@ -9,10 +10,20 @@ from setproctitle import setproctitle
 from json import load, decoder
 from random import randint
 
+search_lang = ["pl",
+               "en",
+               "de",
+               "fr",
+               "cs",
+               "sk"]
+
+search_type = ["basic",
+               "ext"]
+
 class KParser(QTw.QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.settings_tmp = {}
+        self.tmp = {}
         self.label = QTw.QLabel(self)
         self.layout_VBox = QTw.QVBoxLayout(self)
         self.layout_HBox = QTw.QHBoxLayout(self)
@@ -39,46 +50,122 @@ class KParser(QTw.QWidget):
         except KeyError:
             self.main_menu()
 
-    def main_menu(self, mode=0):
+    def main_menu(self, mode=0, layouts=None):
         if mode == 1:
             del cr.cache["mode"]
-        self.clear_layout(self.layout_VBox)
+        if layouts is not None:
+            self.clear_layout(layouts)
+        self.clear_layout([self.layout_VBox])
         self.widget.setFixedHeight(160)
-        self.resize(160, 200)
+        self.resize(165, 165)
         self.setWindowTitle("Menu Główne - KParser")
         start_btn = QTw.QPushButton("Zacznij wyszukiwanie", self)
+        filter_btn = QTw.QPushButton("Oczyszczenie ze śmieci", self)
         settings_btn = QTw.QPushButton("Ustawienia", self)
         label = QTw.QLabel(self)
         label.setPixmap(self.pixmap)
         self.layout_VBox.addWidget(label)
         self.layout_VBox.addWidget(start_btn, 0)
-        self.layout_VBox.addWidget(settings_btn, 1)
+        self.layout_VBox.addWidget(filter_btn, 1)
+        self.layout_VBox.addWidget(settings_btn, 2)
         self.widget.setLayout(self.layout_VBox)
         start_btn.clicked.connect(self.start)
+        filter_btn.clicked.connect(self.filter)
         settings_btn.clicked.connect(self.settings)
+        start_btn.setFixedWidth(150)
+        filter_btn.setFixedWidth(150)
+        settings_btn.setFixedWidth(150)
         self.show()
         if mode == 1:
             self.settings()
 
     @pyqtSlot()
     def start(self):
-        self.clear_layout(self.layout_VBox)
-        self.resize(160, 200)
+        self.clear_layout([self.layout_VBox, self.layout_HBox])
+        self.resize(280, 120)
         self.setWindowTitle("KParser")
-        start_btn = QTw.QPushButton("Zacznij wyszukiwanie", self)
-        settings_btn = QTw.QPushButton("Ustawienia", self)
-        self.label.setPixmap(self.pixmap)
-        self.layout_VBox.addWidget(self.label)
-        self.layout_VBox.addWidget(start_btn, 0)
-        self.layout_VBox.addWidget(settings_btn, 1)
-        self.widget.setLayout(self.layout_VBox)
+        self.tmp["path"] = "email/"
+        self.tmp["path_len"] = 6
+        start_btn = QTw.QPushButton("Rozpocznij wyszukiwanie", self)
+        start_btn.setEnabled(False)
+        back_btn = QTw.QPushButton("Wróć", self)
+        layout_VBox = QTw.QVBoxLayout(self)
+        layout_HBox_1 = QTw.QHBoxLayout(self)
+        layout_HBox_2 = QTw.QHBoxLayout(self)
+        url_line = QTw.QLineEdit(self)
+        url_line.setPlaceholderText("Wpisz szukaną frazę lub adres strony")
+        url_line.setObjectName("text")
+        queries_number_line = QTw.QLineEdit(str(cr.cache["queries_number"]), self)
+        queries_number_line.setObjectName("query_number")
+        path_line = QTw.QLineEdit("email/", self)
+        path_line.setObjectName("path")
+        search_type_radio_btn_1 = QTw.QRadioButton("Fraza do Google'a", self)
+        search_type_radio_btn_1.setObjectName("radio_1")
+        search_type_radio_btn_2 = QTw.QRadioButton("Konkretna strona", self)
+        search_type_radio_btn_2.setObjectName("radio_2")
+        search_type_radio_btn_1.setChecked(True)
+        layout_VBox.addWidget(url_line, 0)
+        layout_HBox_1.addWidget(search_type_radio_btn_1, 0)
+        layout_HBox_1.addWidget(search_type_radio_btn_2, 1)
+        layout_HBox_2.addWidget(start_btn, 0)
+        layout_HBox_2.addWidget(back_btn, 1)
+        layout_VBox.addLayout(layout_HBox_1)
+        layout_VBox.addWidget(QTw.QLabel("Liczba wyników do przeszukania", self), 2)
+        layout_VBox.addWidget(queries_number_line, 3)
+        layout_VBox.addWidget(QTw.QLabel("Katalog zapisu"), 4)
+        layout_VBox.addWidget(path_line, 5)
+        layout_VBox.addLayout(layout_HBox_2, 6)
+        self.widget.setLayout(layout_VBox)
+        self.widget.setFixedWidth(400)
+        self.widget.setFixedHeight(120)
+        self.widget.move(40, 0)
+
+        def values_change():
+            sending_button = self.sender()
+            par_id = sending_button.objectName()
+            if par_id == "radio_1":
+                self.tmp["search_type"] = "phrase"
+            elif par_id == "radio_2":
+                self.tmp["search_type"] = "url"
+            else:
+                if par_id == "text":
+                    self.tmp["query"] = sending_button.text()
+                elif par_id == "query_number":
+                    val = sending_button.text()
+                    try:
+                        val = int(val)
+                        self.tmp[par_id] = val
+                    except ValueError:
+                        self.tmp[par_id] = 0
+                        if val != "":
+                            self.invalid_value_type("Nieprawidłowy typ danych: Dozwolone są liczby całkowite")
+                else:
+                    self.tmp[par_id] = sending_button.text()
+            values = list(self.tmp.values())
+            if not values.count("") and self.tmp["query_number"] != 0:
+                start_btn.setEnabled(True)
+            else:
+                start_btn.setEnabled(False)
+
+        url_line.textChanged.connect(values_change)
+        queries_number_line.textChanged.connect(values_change)
+        path_line.textChanged.connect(values_change)
+        start_btn.clicked.connect(self.search_start)
+        back_btn.clicked.connect(lambda: self.main_menu(layouts=[layout_VBox, layout_HBox_1, layout_HBox_2]))
         self.show()
 
     @pyqtSlot()
+    def search_start(self):
+        cr.cache["search_id"] += 1
+
+    @pyqtSlot()
+    def filter(self):
+        pass
+
+    @pyqtSlot()
     def settings(self):
-        self.clear_layout(self.layout_VBox)
-        self.clear_layout(self.layout_HBox)
-        self.resize(160, 320)
+        self.clear_layout([self.layout_VBox, self.layout_HBox])
+        self.resize(165, 310)
         self.setWindowTitle("Ustawienia - KParser")
         confirm_btn = QTw.QPushButton("Zastosuj", self)
         confirm_btn.setEnabled(False)
@@ -87,18 +174,19 @@ class KParser(QTw.QWidget):
             sending_button = self.sender()
             par_id = sending_button.objectName()
             if par_id == "check_registry":
-                self.settings_tmp[par_id] = sending_button.isChecked()
+                self.tmp[par_id] = sending_button.isChecked()
             elif par_id == "queries_number" or par_id == "pause":
                 val = sending_button.text()
                 try:
                     val = int(val)
-                    self.settings_tmp[par_id] = val
+                    self.tmp[par_id] = val
                 except ValueError:
                     if val != "":
                         self.invalid_value_type("Nieprawidłowy typ danych: Dozwolone są liczby całkowite")
             else:
-                self.settings_tmp[par_id] = sending_button.currentIndex()
+                self.tmp[par_id] = sending_button.currentIndex()
             confirm_btn.setEnabled(True)
+
         back_btn = QTw.QPushButton("Wróć", self)
         with open("data/config/config.json", "r") as f:
             config = load(f)
@@ -144,21 +232,30 @@ class KParser(QTw.QWidget):
 
     @pyqtSlot()
     def change_settings_confirm(self):
-        if self.settings_tmp:
-            keys = self.settings_tmp.keys()
-            values = self.settings_tmp.values()
+        if self.tmp:
+            keys = self.tmp.keys()
+            values = self.tmp.values()
             for parameter in keys:
                 for value in values:
+                    if parameter == "search_lang":
+                        value = search_lang[value]
+                    elif parameter == "search_type":
+                        value = search_type[value]
                     sett.change_parameter(parameter, value)
                     break
+        self.tmp = {}
         self.settings()
 
     @staticmethod
-    def clear_layout(layout):
-        while layout.count():
-            child = layout.takeAt(0)
-            if child.widget():
-                child.widget().deleteLater()
+    def clear_layout(layouts: list):
+        for layout in layouts:
+            try:
+                while layout.count():
+                    child = layout.takeAt(0)
+                    if child.widget():
+                        child.widget().deleteLater()
+            except TypeError:
+                pass
 
     def first_config_event(self):
         answer = QTw.QMessageBox.question(

@@ -28,11 +28,13 @@ class KParser(QTw.QWidget):
         self.label = QTw.QLabel(self)
         self.layout_VBox = QTw.QVBoxLayout(self)
         self.layout_HBox = QTw.QHBoxLayout(self)
+        self.layout_HBox_2 = QTw.QHBoxLayout(self)
         self.widget = QTw.QWidget(self)
         self.pixmap = QTg.QPixmap("data/images/logo.png")
         self.main()
 
     def main(self):
+        cr.cache["start_mode"] = 0
         if cr.cache["first_config"]:
             answer = self.message_question("Czy chcesz wstępnie skonfigurować program KParser?")
             if answer == "Yes":
@@ -56,7 +58,7 @@ class KParser(QTw.QWidget):
             del cr.cache["mode"]
         if layouts is not None:
             self.clear_layout(layouts)
-        self.clear_layout([self.layout_VBox])
+        self.clear_layout([self.layout_VBox, self.layout_HBox, self.layout_HBox_2])
         self.widget.setFixedHeight(160)
         self.resize(165, 165)
         self.setWindowTitle("Menu Główne - KParser")
@@ -70,7 +72,9 @@ class KParser(QTw.QWidget):
         self.layout_VBox.addWidget(filter_btn, 1)
         self.layout_VBox.addWidget(settings_btn, 2)
         self.widget.setLayout(self.layout_VBox)
-        start_btn.clicked.connect(self.start)
+        self.widget.setFixedWidth(165)
+        self.widget.setFixedHeight(165)
+        start_btn.clicked.connect(lambda: self.start(mode=cr.cache["start_mode"]))
         filter_btn.clicked.connect(self.filter)
         settings_btn.clicked.connect(self.settings)
         start_btn.setFixedWidth(150)
@@ -81,17 +85,19 @@ class KParser(QTw.QWidget):
             self.settings()
 
     @pyqtSlot()
-    def start(self):
-        self.clear_layout([self.layout_VBox, self.layout_HBox])
+    def start(self, mode=0):
+        self.clear_layout([self.layout_VBox, self.layout_HBox, self.layout_HBox_2])
         self.resize(280, 120)
         self.setWindowTitle("KParser")
         self.tmp["path"] = "email/"
         start_btn = QTw.QPushButton("Rozpocznij wyszukiwanie", self)
         start_btn.setEnabled(False)
         back_btn = QTw.QPushButton("Wróć", self)
-        layout_VBox = QTw.QVBoxLayout(self)
-        layout_HBox_1 = QTw.QHBoxLayout(self)
-        layout_HBox_2 = QTw.QHBoxLayout(self)
+        if mode == 0:
+            self.layout_VBox = QTw.QVBoxLayout(self)
+            self.layout_HBox = QTw.QHBoxLayout(self)
+            self.layout_HBox_2 = QTw.QHBoxLayout(self)
+            cr.cache["start_mode"] = 1
         url_line = QTw.QLineEdit(self)
         url_line.setPlaceholderText("Wpisz szukaną frazę lub adres strony")
         url_line.setObjectName("text")
@@ -106,18 +112,18 @@ class KParser(QTw.QWidget):
         search_type_radio_btn_2.setObjectName("radio_2")
         self.tmp["search_type"] = "phrase"
         search_type_radio_btn_1.setChecked(True)
-        layout_VBox.addWidget(url_line, 0)
-        layout_HBox_1.addWidget(search_type_radio_btn_1, 0)
-        layout_HBox_1.addWidget(search_type_radio_btn_2, 1)
-        layout_HBox_2.addWidget(start_btn, 0)
-        layout_HBox_2.addWidget(back_btn, 1)
-        layout_VBox.addLayout(layout_HBox_1)
-        layout_VBox.addWidget(QTw.QLabel("Liczba wyników do przeszukania", self), 2)
-        layout_VBox.addWidget(queries_number_line, 3)
-        layout_VBox.addWidget(QTw.QLabel("Katalog zapisu"), 4)
-        layout_VBox.addWidget(path_line, 5)
-        layout_VBox.addLayout(layout_HBox_2, 6)
-        self.widget.setLayout(layout_VBox)
+        self.layout_VBox.addWidget(url_line, 0)
+        self.layout_HBox.addWidget(search_type_radio_btn_1, 0)
+        self.layout_HBox.addWidget(search_type_radio_btn_2, 1)
+        self.layout_HBox_2.addWidget(start_btn, 0)
+        self.layout_HBox_2.addWidget(back_btn, 1)
+        self.layout_VBox.addLayout(self.layout_HBox)
+        self.layout_VBox.addWidget(QTw.QLabel("Liczba wyników do przeszukania", self), 2)
+        self.layout_VBox.addWidget(queries_number_line, 3)
+        self.layout_VBox.addWidget(QTw.QLabel("Katalog zapisu"), 4)
+        self.layout_VBox.addWidget(path_line, 5)
+        self.layout_VBox.addLayout(self.layout_HBox_2, 6)
+        self.widget.setLayout(self.layout_VBox)
         self.widget.setFixedWidth(400)
         self.widget.setFixedHeight(120)
         self.widget.move(40, 0)
@@ -153,7 +159,7 @@ class KParser(QTw.QWidget):
         queries_number_line.textChanged.connect(values_change)
         path_line.textChanged.connect(values_change)
         start_btn.clicked.connect(self.search_start)
-        back_btn.clicked.connect(lambda: self.main_menu(layouts=[layout_VBox, layout_HBox_1, layout_HBox_2]))
+        back_btn.clicked.connect(self.main_menu)
         self.show()
 
     @pyqtSlot()
@@ -175,7 +181,7 @@ class KParser(QTw.QWidget):
 
     @pyqtSlot()
     def settings(self):
-        self.clear_layout([self.layout_VBox, self.layout_HBox])
+        self.clear_layout([self.layout_VBox, self.layout_HBox, self.layout_HBox_2])
         self.resize(165, 310)
         self.setWindowTitle("Ustawienia - KParser")
         confirm_btn = QTw.QPushButton("Zastosuj", self)

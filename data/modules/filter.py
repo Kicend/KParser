@@ -19,9 +19,9 @@ def menu_dir():
         file = listdir[choose]
         email_filter(dir, file)
 
-def email_filter(dir, file):
-    file = open("emaile/{}/{}".format(dir, file), "r+").readlines()
-    file_filter = open("emaile/{}/email_filtr {}".format(dir, file), "w+")
+def email_filter(dir, filename):
+    file = open("emaile/{}/{}".format(dir, filename), "r+").readlines()
+    file_filter = open("emaile/{}/email_filtr {}".format(dir, filename), "w+")
     tmp_db = []
 
     for phrase in file:

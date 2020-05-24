@@ -1,3 +1,4 @@
+#! /usr/bin/python3
 import os
 from setproctitle import setproctitle
 from json import load, decoder

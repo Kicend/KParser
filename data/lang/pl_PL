@@ -1,0 +1,59 @@
+FIRST_CONFIG_DIALOG=Czy chcesz wstępnie skonfigurować program KParser? (t/n)
+MAIN_MENU_AUTHOR=WERSJA stworzona przez F.Kicend
+NOTIFICATIONS=POWIADOMIENIA
+CONFIG_STARTUP_ERROR=BŁĄD: Plik konfiguracji może być uszkodzony!\nCzy chcesz, aby została przeprowadzona naprawa? (t/n)
+CONFIG_FIX_INFO=Plik konfiguracji został pomyślnie naprawiony!
+TASK_DONE=Zadanie {} o numerze {} zostało ukończone!\n
+EMPTY_TASKS_LIST=Brak ukończonych zadań!\n
+MAIN_MENU_DIALOG=1 - Wyszukiwanie adresy email na podstawie zadanej frazy w Google\n
+                 2 - Przefiltrowanie danych w pliku email.txt z niepotrzebnych śmieci\n
+                 3 - Ustawienia KParser\n
+                 4 - Zakończ program\n
+CREATE_DIR_DONE=Katalog został utworzony
+MENU_CHO_DIR_DIALOG=Co chcesz zrobić?\n
+                    1 - Wybrać nazwę folderu z zapisanych\n
+                    2 - Utworzyć nowy\n
+ENTER_QUERY=Wpisz zapytanie do wyszukiwarki:
+ENTER_QUERIES_NUMBER=Wpisz ilość zapytań [{}]:
+ENTER_URL=Podaj adres url:
+IS_NOT_URL=To nie jest adres URL!
+SETTINGS_DIALOG=Co chcesz zrobić?\n
+                1 - Usunąć zapisane nazwy folderów\n
+                2 - Usunąć cały plik z zapisanymi folderami\n
+                3 - Usunąć folder emaile\n
+                4 - Skonfigurować program\n
+                5 - Zresetować do domyślnych ustawień\n
+                6 - Powrót do menu głównego\n
+WHICH_DIR_SAVE=Który zapis chcesz usunąć?\n
+DELETE_MORE=Czy chcesz jeszcze coś usunąć?\n
+            1 - Tak\n2 - Nie\n
+FILE_NOT_EXIST_ERROR=BŁĄD: Plik nie istnieje
+FILE_HAS_BEEN_DELETE=Plik został usunięty
+DIR_HAS_BEEN_DELETE=Folder został usunięty
+DIR_NOT_EXIST_ERROR=BŁĄÐ: Folder nie istnieje
+DEFAULT_SETTINGS_DIALOG=Program zresetowany do ustawień domyślnych!
+BACK_TO_MENU_DIALOG=1 - Wróć do menu głównego\n2 - Zakończ program\n
+NEW_DIRNAME_DIALOG=Jak chcesz nazwać nowy folder?\n
+BACK_TO_CREATE_NEW_DIR={} - Wróć do tworzenia nowego folderu
+CHO_DIRNAME_DIALOG=Wybierz nazwę folderu\n
+DIRLIST_EMPTY_INFO=INFORMACJA: Lista folderów jest pusta!
+INCORRECT_VALUE_OF_PARAMETER_INT=Nieprawidłowa wartość parametru!\n
+                                 Prawidłową wartością jest liczba całkowita!
+INCORRECT_VALUE_OF_PARAMETER_STRING=Nieprawidłowa wartość parametru!\n
+                                    Prawidłową wartością jest napis!
+CURRENT_VALUE=Obecna wartość: {} = {}\n
+VALUE_EDIT=Jaką wartość chcesz wprowadzić?
+INCORRECT_VALUE=Nieprawidłowa wartość!
+SETTINGS_BACK_TO_MAIN_MENU=7. Powrót do menu głównego\n
+                           Wybierz ustawienie wpisując odpowiedni numer\n
+PARAMETER_CURR_VALUE_YES=Obecna wartość to: {} = Tak\n
+                         Jaką wartość chcesz wprowadzić?
+PARAMETER_CURR_VALUE_NO=Obecna wartość to: {} = Nie\n
+                        Jaką wartość chcesz wprowadzić?
+WHICH_SEARCH_LANG=Który język wyszukiwania wybierasz?\n
+YES_OR_NO=1 - Tak\n
+          2 - Nie\n
+CHANGE_PARAMETER_SUCCESSFUL=Parametr pomyślnie zmieniony!
+SEARCH_CHO_VALUE=Wyszukiwanie\n
+                 1 - Podstawowe (tylko emaile)\n
+                 2 - Rozszerzone (emaile + nr telefonów)\n

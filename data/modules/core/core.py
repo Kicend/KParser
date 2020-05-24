@@ -20,6 +20,7 @@ keys_id = {
 }
 
 cache = {}
+language_strings = {}
 
 # Uaktualnienie zawartości pamięci podręcznej pobierając dane z pliku config.json
 def cache_update():

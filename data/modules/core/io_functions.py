@@ -17,7 +17,7 @@ def dir_db_read():
     dir_db.close()
 
 def new_directory():
-    dirname = input("Jak chcesz nazwać nowy folder? \n")
+    dirname = input("Jak chcesz nazwać nowy folder?\n")
     cr.cache["new_dir"] = dirname
     cr.cache["cho"] = dirname
     os.makedirs("emaile/{}".format(dirname), exist_ok=True)
@@ -30,7 +30,7 @@ def cho_dir():
             folder_n = folder[0:n - 1]
             print("{} - {}".format(number, folder_n))
         print("{} - Wróć do tworzenia nowego folderu".format(number+1))
-        choose = int(input("Wybierz nazwę folderu \n"))
+        choose = int(input("Wybierz nazwę folderu\n"))
         if choose == number+1:
             new_directory()
         else:

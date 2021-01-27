@@ -5,7 +5,6 @@ import requests
 import urllib3
 from googlesearch import search
 from bs4 import BeautifulSoup
-from data.modules.core import core as cr
 from .core import io_functions as io_f
 
 # Klasa, która jest uruchamiana w osobnym procesie z pomocą multiprocessing
@@ -15,18 +14,26 @@ class SearchProcess:
         self.query = query
         self.queries_number = queries_number
         self.url = url
+        self.cache = self.cache_update()
         self.urls = []
         self.emails = []
         self.registry_db = []
         self.search()
 
+    @staticmethod
+    def cache_update():
+        with open("data/tmp/curr_session_cache.json", "r") as f:
+            cache = json.load(f)
+
+        return cache
+
     def search(self):
         if self.url is None:
             for result in search(self.query,
                                  tld="pl",
-                                 lang=cr.cache["search_lang"],
+                                 lang=self.cache["search_lang"],
                                  stop=self.queries_number,
-                                 pause=cr.cache["pause"]):
+                                 pause=self.cache["pause"]):
                 self.urls.append(str(result))
         else:
             self.urls.append(self.url)
@@ -37,7 +44,7 @@ class SearchProcess:
         urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
         while self.urls:
             url = self.urls.pop(0)
-            r = requests.get(url, headers={"User-Agent": cr.cache["user_agent"]}, verify=False)
+            r = requests.get(url, headers={"User-Agent": self.cache["user_agent"]}, verify=False)
             soup = BeautifulSoup(r.text, "lxml")
             links = soup.find_all("a")
             links_2 = soup.find_all("b")
@@ -74,20 +81,20 @@ class SearchProcess:
                     self.emails.append(email[symbol_index+1:])
 
     def file(self):
-        if cr.cache["OS"] == "linux":
+        if self.cache["OS"] == "linux":
             data = time.strftime("%H:%M %d.%m.%Y")
         else:
             data = time.strftime("%HH %MM %d.%m.%Y")
-        if "new_dir" in cr.cache.keys():
+        if "new_dir" in self.cache.keys():
             io_f.dir_db_save()
-        f = open("emaile/{}/email {}.txt".format(cr.cache["cho"], data), "a")
+        f = open("emaile/{}/email {}.txt".format(self.cache["cho"], data), "a")
         self.registry_read()
         for email in self.emails:
             if email.count("@"):
                 if email.count("\\"):
                     index = int(email.index("\\"))
                     email_e = email[0:index]
-                    if email_e in self.registry_db and cr.cache["check_registry"] is True:
+                    if email_e in self.registry_db and self.cache["check_registry"] is True:
                         pass
                     else:
                         f.write("{} \n".format(email_e))
@@ -100,7 +107,7 @@ class SearchProcess:
                 if email.count("&"):
                     pass
                 else:
-                    if email in self.registry_db and cr.cache["check_registry"] is True:
+                    if email in self.registry_db and self.cache["check_registry"] is True:
                         pass
                     else:
                         f.write("{} \n".format(email))

@@ -20,6 +20,7 @@ def new_directory():
     dirname = input("Jak chcesz nazwać nowy folder?\n")
     cr.cache["new_dir"] = dirname
     cr.cache["cho"] = dirname
+    cr.update_cache_file({"new_dir": dirname, "cho": dirname})
     os.makedirs("emaile/{}".format(dirname), exist_ok=True)
 
 def cho_dir():
@@ -37,6 +38,7 @@ def cho_dir():
             dirname = dirlist[choose]
             n = dirname.index("\n")
             cr.cache["cho"] = dirname[0:n-1]
+            cr.update_cache_file({"cho": dirname[0:n-1]})
             os.makedirs("emaile/{}".format(dirname[0:n-1]), exist_ok=True)
     else:
         print("INFORMACJA: Lista folderów jest pusta!")

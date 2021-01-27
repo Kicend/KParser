@@ -1,7 +1,7 @@
 #! /usr/bin/python3
 import os
 from setproctitle import setproctitle
-from json import load, decoder
+from json import load, decoder, dump
 from sys import exit, platform
 from time import sleep
 from shutil import rmtree
@@ -196,6 +196,8 @@ def other_modules(decision):
         if mode == 3:
             main_menu()
         else:
+            with open("data/tmp/curr_session_cache.json", "w") as csc:
+                dump(cr.cache, csc, indent=4)
             search_parameters(mode)
     elif decision == 2:
         menu_dir()
@@ -209,6 +211,8 @@ def other_modules(decision):
                     process.terminate()
         if os.path.isfile("data/tmp/curr_session.json"):
             os.remove("data/tmp/curr_session.json")
+        if os.path.isfile("data/tmp/curr_session_cache.json"):
+            os.remove("data/tmp/curr_session_cache.json")
         exit(0)
 
 def back_to_menu():

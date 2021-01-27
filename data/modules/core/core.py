@@ -28,6 +28,13 @@ def cache_update():
         dict_tmp = json.load(f)
     return dict_tmp
 
+def update_cache_file(new_data: dict):
+    with open("data/tmp/curr_session_cache.json", "r") as f:
+        data = json.load(f)
+        new_cache = data | new_data
+    with open("data/tmp/curr_session_cache.json", "w") as f:
+        json.dump(new_cache, f, indent=4)
+
 # Funkcja mająca za zadanie naprawę pliku konfiguracyjnego
 def config_fix(state: int, mist_list=None, config=None):
     if state == 0:

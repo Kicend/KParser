@@ -12,7 +12,7 @@ class SearchProcess:
     def __init__(self, search_id, query=None, queries_number=None, url=None):
         self.id = search_id
         self.query = query
-        self.queries_number = queries_number
+        self.queries_number = int(queries_number)
         self.url = url
         self.cache = self.cache_update()
         self.urls = []
@@ -82,9 +82,9 @@ class SearchProcess:
 
     def file(self):
         if self.cache["OS"] == "linux":
-            data = time.strftime("%H:%M %d.%m.%Y")
+            data = time.strftime("%d.%m.%Y %H:%M")
         else:
-            data = time.strftime("%HH %MM %d.%m.%Y")
+            data = time.strftime("%d.%m.%Y %HH %MM")
         if "new_dir" in self.cache.keys():
             io_f.dir_db_save()
         f = open("emaile/{}/email {}.txt".format(self.cache["cho"], data), "a")

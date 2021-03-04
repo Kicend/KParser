@@ -2,6 +2,7 @@ import argparse
 import json
 from random import randint
 from sys import platform
+from data.modules.core.core import startup
 from data.modules.search import SearchProcess
 
 cache = {}
@@ -39,6 +40,7 @@ def parser():
         SearchProcess(0, args.query, args.number)
 
 if __name__ == "__main__":
+    startup()
     with open("data/UA.json", "r") as f:
         ua = json.load(f)
         cache["user_agent"] = ua[str(randint(0, 8))]

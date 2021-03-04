@@ -48,6 +48,7 @@ def config_fix(state: int, mist_list=None, config=None):
 
 # Funkcja sprawdzająca program przed uruchomieniem menu głównego
 def startup():
+    os.makedirs("data/tmp", exist_ok=True)
     if os.path.isfile("data/tmp/curr_session.json"):
         os.remove("data/tmp/curr_session.json")
     try:

@@ -28,6 +28,11 @@ def cache_update():
         dict_tmp = json.load(f)
     return dict_tmp
 
+def load_cache_file():
+    with open("data/tmp/curr_session_cache.json", "r") as f:
+        data = json.load(f)
+    return data
+
 def update_cache_file(new_data: dict):
     with open("data/tmp/curr_session_cache.json", "r") as f:
         data = json.load(f)

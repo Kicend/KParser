@@ -6,7 +6,8 @@ dirlist = []
 def dir_db_save():
     os.makedirs("data/config", exist_ok=True)
     dir_db = open("data/config/dir_db.txt", "a")
-    dir_db.write("{} \n".format(cr.cache["new_dir"]))
+    cache = cr.load_cache_file()
+    dir_db.write("{} \n".format(cache["new_dir"]))
     dir_db.close()
 
 def dir_db_read():

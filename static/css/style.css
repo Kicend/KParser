@@ -1,0 +1,18 @@
+div#toolbar {
+    margin: auto;
+    border-bottom: 2px solid lightblue;
+}
+div#app {
+    margin-top: 30vh;
+    margin-left: auto;
+    margin-right: auto;
+    height: 100%;
+    width: 30vw;
+    border: 2px solid black;
+    text-align: center;
+}
+img#logo {
+    margin: auto;
+    width: 75%;
+    height: 75%;
+}

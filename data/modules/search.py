@@ -141,21 +141,21 @@ class SearchProcess:
         # TODO: Uproszczenie kodu poprzez dzielenie pamięci z procesem KParser_cli
 
     def registry_read(self):
-        registry = open("data/config/rejestr.txt", "r")
+        registry = open("data/config/registry.txt", "r")
         for email in registry:
             n = email.index("\n")
             email_n = email[0:n - 1]
             self.registry_db.append(email_n)
         registry.close()
 
-    def registry_save(self, list):
-        registry = open("data/config/rejestr.txt", "r+")
-        for email in list:
+    def registry_save(self, entries):
+        registry = open("data/config/registry.txt", "r+")
+        for email in entries:
             if email in self.registry_db:
                 pass
             else:
-                position = list.index(email)
-                registry.write("{} \n".format(list[position]))
+                position = entries.index(email)
+                registry.write("{} \n".format(entries[position]))
         registry.close()
 
 # TODO: Nowy sposób zapisu plików z podziałem na poszczególne strony i znalezione na nich e-maile + numery telefonów

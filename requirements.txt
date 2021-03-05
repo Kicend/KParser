@@ -11,3 +11,5 @@ docutils>=0.15.2
 idna>=2.8
 setproctitle>=1.1.10
 soupsieve>=1.9.5
+setuptools>=54.1.0
+Flask>=1.1.2

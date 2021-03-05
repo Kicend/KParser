@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link rel=stylesheet type="text/css" href="../static/css/style.css">
+    <script src="../static/scripts/js/disableButton.js"></script>
+    <title>KParser</title>
+</head>
+<body>
+    <div class="main">
+        <div id="toolbar">
+            <a href="index.html">Strona główna</a>
+            <a href="kparser.html">Wyszukiwarka emaili</a>
+        </div>
+        <div id="app">
+            <img id="logo" src="../static/img/kparser_logo.jpg" alt="Logo programu">
+            <form name="kparser_ui" action="" method="post">
+                <input id="query" type="text" name="query" value="" placeholder="Wpisz zapytanie">
+                <br>Opcje:<br>
+                <!--
+                <label><input type="radio" name="search_mode" value="0" checked>Fraza do Google'a</label>
+                <label><input type="radio" name="search_mode" value="1">Konkretna strona</label>
+                <br>
+                -->
+                Ilość zapytań: <input type="text" name="queries_number" value="10"><br>
+                Język wyszukiwania:
+                <input list="search_lang" name="search_lang" value="pl"> 
+                <datalist id="search_lang">
+                    <option value="pl">
+                    <option value="en">
+                    <option value="de">
+                    <option value="fr">
+                    <option value="cs">
+                    <option value="sk">
+                </datalist>
+                <br>
+                <input id="start" type="submit" name="start" value="Start" disabled>
+            </form>
+			<!--
+            <?php
+                if($_SERVER["REQUEST_METHOD"] == "POST") {
+                    $query = $_POST["query"];
+                    # $search_mode = $_POST["search_mode"];
+                    $queries_number = $_POST["queries_number"];
+                    $search_lang = $_POST["search_lang"];
+                };
+                if(isset($_POST["start"])) {
+                    /*
+                    $command = escapeshellcmd("python KParser.py -n $queries_number -l $search_lang $query");
+                    $result = shell_exec($command);
+                    */
+                    # exec("start_parser.bat $queries_number $search_lang $query");
+                    system("cmd /C 'E:\wamp64\www\Projekt E\KParser\start_parser.bat' [$queries_number, $search_lang, $query]");
+                };
+            ?>
+			-->
+        </div>
+    </div>
+</body>
+</html>

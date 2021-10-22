@@ -5,7 +5,7 @@ import requests
 import urllib3
 from googlesearch import search
 from bs4 import BeautifulSoup
-from .core import io_functions as io_f
+from core import io_functions as io_f
 
 # Klasa, która jest uruchamiana w osobnym procesie z pomocą multiprocessing
 class SearchProcess:
